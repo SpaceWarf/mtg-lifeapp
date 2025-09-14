@@ -1,0 +1,18 @@
+{
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+  "editor.indentSize": "tabSize",
+  "editor.tabSize": 2,
+  "editor.detectIndentation": false,
+  "editor.codeActionsOnSave": {
+    "source.fixAll": "explicit",
+    "source.fixAll.eslint": "always",
+    "source.sortMembers": "always",
+    "source.organizeImports": "always"
+  },
+  "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
+  "eslint.format.enable": true,
+  "eslint.run": "onSave",
+  "prettier.tabWidth": 2,
+  "typescript.tsdk": "node_modules/typescript/lib"
+}
