@@ -109,6 +109,7 @@ export default function Index() {
       {selectedPlayer && (
         <PlayerSelectModal
           player={data[selectedPlayer]}
+          flipped={["player1", "player2"].includes(selectedPlayer)}
           onClose={() => setSelectedPlayer(null)}
           onSelectPlayer={handleUpdatePlayer}
           onSelectDeck={handleUpdateDeck}

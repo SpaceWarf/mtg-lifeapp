@@ -5,7 +5,13 @@ import { faMinus, faPlus, faUserPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { ImageBackground } from "expo-image";
 import { useContext, useEffect, useMemo, useState } from "react";
-import { Dimensions, StyleSheet, TouchableHighlight, View } from "react-native";
+import {
+  Dimensions,
+  Image,
+  StyleSheet,
+  TouchableHighlight,
+  View,
+} from "react-native";
 import { ThemedText } from "./themed-text";
 
 const width = Dimensions.get("window").height / 2 - 60;
@@ -130,7 +136,7 @@ export function PlayerCard({
     <View style={[styles.container, styles.rotated, flipped && styles.flipped]}>
       <ImageBackground
         style={styles.imageBackground}
-        source={profilePictureUrl}
+        source={data.deckObj?.featured}
         contentPosition="center"
       >
         <TouchableHighlight
@@ -148,7 +154,10 @@ export function PlayerCard({
             underlayColor="rgba(56, 56, 56, 0.5)"
             onPress={handlePlayerSelect}
           >
-            <ThemedText>{data.playerObj.name}</ThemedText>
+            <View style={styles.playerSelectContent}>
+              <Image source={{ uri: profilePictureUrl }} style={styles.pfp} />
+              <ThemedText>{data.playerObj.name}</ThemedText>
+            </View>
           </TouchableHighlight>
           <View style={styles.lifeTotalContainer} pointerEvents={"box-none"}>
             <ThemedText style={[styles.lifeTotal]}>{data.lifeTotal}</ThemedText>
@@ -226,6 +235,16 @@ const styles = StyleSheet.create({
     fontSize: 20,
     lineHeight: 20,
     overflow: "hidden",
+  },
+  playerSelectContent: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 5,
+  },
+  pfp: {
+    width: 30,
+    height: 30,
+    borderRadius: 15,
   },
   lifeTotalContainer: {
     justifyContent: "center",

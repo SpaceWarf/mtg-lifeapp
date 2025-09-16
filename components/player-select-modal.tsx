@@ -28,6 +28,7 @@ import { ThemedText } from "./themed-text";
 
 type OwnProps = {
   player: PlayerData;
+  flipped?: boolean;
   onClose: () => void;
   onSelectPlayer: (player: DbPlayer) => void;
   onSelectDeck: (deck: DbDeck) => void;
@@ -35,6 +36,7 @@ type OwnProps = {
 
 export function PlayerSelectModal({
   player,
+  flipped,
   onClose,
   onSelectPlayer,
   onSelectDeck,
@@ -59,7 +61,7 @@ export function PlayerSelectModal({
       backdropColor="rgba(0, 0, 0, 0.4)"
       visible
     >
-      <View style={styles.centeredView}>
+      <View style={[styles.centeredView, flipped && styles.flipped]}>
         <View
           style={[
             styles.modalView,
@@ -408,5 +410,8 @@ const styles = StyleSheet.create({
   },
   disabled: {
     opacity: 0.5,
+  },
+  flipped: {
+    transform: [{ rotate: "180deg" }],
   },
 });
