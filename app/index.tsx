@@ -7,7 +7,12 @@ import { usePlayers } from "@/hooks/use-players";
 import { DbDeck } from "@/state/deck";
 import { GameData } from "@/state/game-data";
 import { DbPlayer } from "@/state/player";
-import { getProfilePictureUrl } from "@/utils/storage";
+import {
+  getProfilePictureUrl,
+  loadGameData,
+  saveGameData,
+} from "@/utils/storage";
+import { cloneDeep } from "lodash";
 import { useContext, useEffect, useMemo, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -24,20 +29,32 @@ const styles = StyleSheet.create({
   },
 });
 
+const defaultData: GameData = {
+  player1: { playerId: "", deckId: "", lifeTotal: 40 },
+  player2: { playerId: "", deckId: "", lifeTotal: 40 },
+  player3: { playerId: "", deckId: "", lifeTotal: 40 },
+  player4: { playerId: "", deckId: "", lifeTotal: 40 },
+};
+
 export default function Index() {
   const { dbPlayers } = usePlayers();
   const { setPfps } = useContext(PfpContext);
 
-  const [data, setData] = useState<GameData>({
-    player1: { playerId: "", deckId: "", lifeTotal: 40 },
-    player2: { playerId: "", deckId: "", lifeTotal: 40 },
-    player3: { playerId: "", deckId: "", lifeTotal: 40 },
-    player4: { playerId: "", deckId: "", lifeTotal: 40 },
-  });
+  const [data, setData] = useState<GameData>(cloneDeep(defaultData));
   const [selectedPlayer, setSelectedPlayer] = useState<keyof GameData | null>(
     null
   );
   const [resetting, setResetting] = useState(false);
+
+  useEffect(() => {
+    loadGameData().then((gameData) => {
+      setData(gameData || cloneDeep(defaultData));
+    });
+  }, []);
+
+  useEffect(() => {
+    saveGameData(data);
+  }, [data]);
 
   useEffect(() => {
     if (dbPlayers?.length) {
