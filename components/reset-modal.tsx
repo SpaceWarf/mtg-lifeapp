@@ -11,12 +11,18 @@ import { Modal, Pressable, StyleSheet, View } from "react-native";
 import { ThemedText } from "./themed-text";
 
 type OwnProps = {
+  canSave?: boolean;
   onClose: () => void;
   onReset: () => void;
   onResetAndSave: () => void;
 };
 
-export function ResetModal({ onClose, onReset, onResetAndSave }: OwnProps) {
+export function ResetModal({
+  canSave,
+  onClose,
+  onReset,
+  onResetAndSave,
+}: OwnProps) {
   const [saving, setSaving] = useState(false);
 
   if (saving) {
@@ -95,7 +101,8 @@ export function ResetModal({ onClose, onReset, onResetAndSave }: OwnProps) {
           </View>
           <ThemedText style={styles.description}>
             Resetting will set the life totals back to 40. You can also reset
-            and save the data to the database.
+            and save the data to the database. You can only save if all players
+            and decks are selected.
           </ThemedText>
           <Pressable style={styles.button} onPress={onReset}>
             <FontAwesomeIcon
@@ -105,7 +112,11 @@ export function ResetModal({ onClose, onReset, onResetAndSave }: OwnProps) {
             />
             <ThemedText>Reset</ThemedText>
           </Pressable>
-          <Pressable style={styles.button} onPress={() => setSaving(true)}>
+          <Pressable
+            style={[styles.button, !canSave && styles.disabled]}
+            onPress={() => setSaving(true)}
+            disabled={!canSave}
+          >
             <FontAwesomeIcon icon={faSave} color={Colors.dark.text} size={20} />
             <ThemedText>Reset & Save</ThemedText>
           </Pressable>
@@ -159,5 +170,8 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(56, 56, 56, 0.9)",
     padding: 15,
     borderRadius: 10,
+  },
+  disabled: {
+    opacity: 0.5,
   },
 });

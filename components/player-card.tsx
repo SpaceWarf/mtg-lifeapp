@@ -136,7 +136,7 @@ export function PlayerCard({
     <View style={[styles.container, styles.rotated, flipped && styles.flipped]}>
       <ImageBackground
         style={styles.imageBackground}
-        source={data.deckObj?.featured}
+        source={data.deckObj?.featured || profilePictureUrl}
         contentPosition="center"
       >
         <TouchableHighlight

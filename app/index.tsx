@@ -8,7 +8,7 @@ import { DbDeck } from "@/state/deck";
 import { GameData } from "@/state/game-data";
 import { DbPlayer } from "@/state/player";
 import { getProfilePictureUrl } from "@/utils/storage";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -104,6 +104,19 @@ export default function Index() {
     }));
   };
 
+  const canSave = useMemo(() => {
+    return (
+      !!data.player1.playerId &&
+      !!data.player2.playerId &&
+      !!data.player3.playerId &&
+      !!data.player4.playerId &&
+      !!data.player1.deckId &&
+      !!data.player2.deckId &&
+      !!data.player3.deckId &&
+      !!data.player4.deckId
+    );
+  }, [data]);
+
   return (
     <SafeAreaView style={styles.container}>
       {selectedPlayer && (
@@ -117,6 +130,7 @@ export default function Index() {
       )}
       {resetting && (
         <ResetModal
+          canSave={canSave}
           onClose={() => setResetting(false)}
           onReset={handleReset}
           onResetAndSave={handleResetAndSave}
