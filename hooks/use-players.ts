@@ -16,7 +16,7 @@ export function usePlayers() {
     if (dbPlayers?.length) {
       currentData?.setPlayers(dbPlayers);
     }
-  }, [dbPlayers, currentData]);
+  }, [dbPlayers]);
 
   return {
     dbPlayers,

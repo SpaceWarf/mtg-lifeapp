@@ -61,7 +61,7 @@ export function PlayerSelectModal({
       backdropColor="rgba(0, 0, 0, 0.4)"
       visible
     >
-      <View style={[styles.centeredView, flipped && styles.flipped]}>
+      <View style={styles.centeredView}>
         <View
           style={[
             styles.modalView,

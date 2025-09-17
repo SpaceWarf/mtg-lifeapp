@@ -14,9 +14,9 @@ export function useDecks() {
 
   useEffect(() => {
     if (dbDecks?.length) {
-      currentData?.setDecks(dbDecks);
+      currentData?.setDecks(dbDecks.filter((deck) => !deck.gameChangersDeck));
     }
-  }, [dbDecks, currentData]);
+  }, [dbDecks]);
 
   return {
     dbDecks,
