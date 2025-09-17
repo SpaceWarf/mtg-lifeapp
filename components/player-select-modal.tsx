@@ -181,6 +181,8 @@ export function PlayerSelectContent({
   onClose: () => void;
   onSelectPlayer: (player: DbPlayer) => void;
 }) {
+  const { pfps } = useContext(PfpContext);
+
   const { dbPlayers, loadingPlayers } = usePlayers();
 
   const [search, setSearch] = useState<string>("");
@@ -238,7 +240,13 @@ export function PlayerSelectContent({
               underlayColor="#383838"
               onPress={() => onSelectPlayer(player)}
             >
-              <ThemedText>{player.name}</ThemedText>
+              <ImageBackground
+                style={styles.listItemBackground}
+                source={pfps[player.id]}
+                contentPosition="center"
+              >
+                <ThemedText style={styles.imageText}>{player.name}</ThemedText>
+              </ImageBackground>
             </TouchableHighlight>
           ))}
         </ScrollView>
@@ -311,7 +319,13 @@ export function DeckSelectContent({
               underlayColor="#383838"
               onPress={() => onSelectDeck(deck)}
             >
-              <ThemedText>{deck.name}</ThemedText>
+              <ImageBackground
+                style={styles.listItemBackground}
+                source={deck.featured}
+                contentPosition="center"
+              >
+                <ThemedText style={styles.imageText}>{deck.name}</ThemedText>
+              </ImageBackground>
             </TouchableHighlight>
           ))}
         </ScrollView>
@@ -383,9 +397,9 @@ const styles = StyleSheet.create({
   },
   item: {
     marginTop: 10,
-    padding: 15,
     backgroundColor: "#272727",
     borderRadius: 10,
+    overflow: "hidden",
   },
   playerItem: {},
   deckItem: {},
@@ -394,6 +408,11 @@ const styles = StyleSheet.create({
     height: "100%",
     justifyContent: "center",
     alignItems: "center",
+  },
+  listItemBackground: {
+    justifyContent: "center",
+    alignItems: "center",
+    height: 75,
   },
   imageText: {
     height: "100%",
