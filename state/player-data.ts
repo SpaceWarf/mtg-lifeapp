@@ -6,5 +6,9 @@ export interface PlayerData {
   playerObj?: DbPlayer;
   deckId: string;
   deckObj?: DbDeck;
+  deckVersion?: string;
   lifeTotal: number;
+  dead: boolean;
+  started: boolean;
+  t1SolRing: boolean;
 }

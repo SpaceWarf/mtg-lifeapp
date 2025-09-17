@@ -1,3 +1,4 @@
+import { GameData } from "@/state/game-data";
 import { Colors } from "@/state/theme";
 import {
   faLeftLong,
@@ -6,11 +7,13 @@ import {
   faXmark,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Modal, Pressable, StyleSheet, View } from "react-native";
+import { PlayerGameRecap } from "./player-game-recap";
 import { ThemedText } from "./themed-text";
 
 type OwnProps = {
+  gameData: GameData;
   canSave?: boolean;
   onClose: () => void;
   onReset: () => void;
@@ -18,12 +21,36 @@ type OwnProps = {
 };
 
 export function ResetModal({
+  gameData,
   canSave,
   onClose,
   onReset,
   onResetAndSave,
 }: OwnProps) {
   const [saving, setSaving] = useState(false);
+
+  const gameDataError = useMemo(() => {
+    const deadPlayers = Object.values(gameData).filter(
+      (player) => player.dead
+    ).length;
+    const startedPlayers = Object.values(gameData).filter(
+      (player) => player.started
+    ).length;
+
+    if (deadPlayers !== 3) {
+      return "A winner was not determined for this games.";
+    }
+
+    if (startedPlayers === 0) {
+      return "No player has started the game.";
+    }
+
+    if (startedPlayers > 1) {
+      return "Multiple players have started the game.";
+    }
+
+    return null;
+  }, [gameData]);
 
   if (saving) {
     return (
@@ -53,7 +80,20 @@ export function ResetModal({
             <ThemedText style={styles.description}>
               Validate that the data is correct before saving.
             </ThemedText>
-            <Pressable style={styles.button} onPress={onResetAndSave}>
+            <View style={styles.recap}>
+              <PlayerGameRecap playerData={gameData.player1} />
+              <PlayerGameRecap playerData={gameData.player2} />
+              <PlayerGameRecap playerData={gameData.player3} />
+              <PlayerGameRecap playerData={gameData.player4} />
+            </View>
+            {gameDataError && (
+              <ThemedText style={styles.error}>{gameDataError}</ThemedText>
+            )}
+            <Pressable
+              style={[styles.button, !!gameDataError && styles.disabled]}
+              onPress={onResetAndSave}
+              disabled={!!gameDataError}
+            >
               <FontAwesomeIcon
                 icon={faSave}
                 color={Colors.dark.text}
@@ -160,7 +200,12 @@ const styles = StyleSheet.create({
   },
   description: {
     fontSize: 16,
-    marginBottom: 25,
+    marginBottom: 10,
+  },
+  recap: {
+    gap: 10,
+    marginBottom: 10,
+    marginLeft: 10,
   },
   button: {
     flexDirection: "row",
@@ -173,5 +218,11 @@ const styles = StyleSheet.create({
   },
   disabled: {
     opacity: 0.5,
+  },
+  error: {
+    color: "red",
+    fontSize: 16,
+    textAlign: "center",
+    marginBottom: 10,
   },
 });

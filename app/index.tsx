@@ -5,8 +5,10 @@ import { Toolbar } from "@/components/toolbar";
 import { PfpContext } from "@/contexts/pfp-context";
 import { usePlayers } from "@/hooks/use-players";
 import { DbDeck } from "@/state/deck";
+import { Game } from "@/state/game";
 import { GameData } from "@/state/game-data";
 import { DbPlayer } from "@/state/player";
+import { gameDataToGame } from "@/utils/game";
 import {
   getProfilePictureUrl,
   loadGameData,
@@ -30,10 +32,38 @@ const styles = StyleSheet.create({
 });
 
 const defaultData: GameData = {
-  player1: { playerId: "", deckId: "", lifeTotal: 40 },
-  player2: { playerId: "", deckId: "", lifeTotal: 40 },
-  player3: { playerId: "", deckId: "", lifeTotal: 40 },
-  player4: { playerId: "", deckId: "", lifeTotal: 40 },
+  player1: {
+    playerId: "",
+    deckId: "",
+    lifeTotal: 40,
+    dead: false,
+    started: false,
+    t1SolRing: false,
+  },
+  player2: {
+    playerId: "",
+    deckId: "",
+    lifeTotal: 40,
+    dead: false,
+    started: false,
+    t1SolRing: false,
+  },
+  player3: {
+    playerId: "",
+    deckId: "",
+    lifeTotal: 40,
+    dead: false,
+    started: false,
+    t1SolRing: false,
+  },
+  player4: {
+    playerId: "",
+    deckId: "",
+    lifeTotal: 40,
+    dead: false,
+    started: false,
+    t1SolRing: false,
+  },
 };
 
 export default function Index() {
@@ -76,22 +106,25 @@ export default function Index() {
       [player]: {
         ...prev[player],
         lifeTotal: prev[player].lifeTotal + amount,
+        dead: prev[player].lifeTotal + amount <= 0,
       },
     }));
   };
 
   const handleReset = () => {
     setData({
-      player1: { ...data["player1"], lifeTotal: 40 },
-      player2: { ...data["player2"], lifeTotal: 40 },
-      player3: { ...data["player3"], lifeTotal: 40 },
-      player4: { ...data["player4"], lifeTotal: 40 },
+      player1: { ...data["player1"], lifeTotal: 40, dead: false },
+      player2: { ...data["player2"], lifeTotal: 40, dead: false },
+      player3: { ...data["player3"], lifeTotal: 40, dead: false },
+      player4: { ...data["player4"], lifeTotal: 40, dead: false },
     });
     setResetting(false);
   };
 
   const handleResetAndSave = () => {
     // TODO: Save the data
+    const game: Game = gameDataToGame(data);
+    console.log("SAVING GAME DATA", game);
     handleReset();
   };
 
@@ -147,6 +180,7 @@ export default function Index() {
       )}
       {resetting && (
         <ResetModal
+          gameData={data}
           canSave={canSave}
           onClose={() => setResetting(false)}
           onReset={handleReset}

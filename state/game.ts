@@ -1,6 +1,4 @@
 import { DatabaseItem } from "./database-item";
-import { DbDeck } from "./deck";
-import { DbPlayer } from "./player";
 
 export interface Game {
   date: string;
@@ -13,10 +11,8 @@ export interface Game {
 
 export interface GamePlayer {
   player: string;
-  playerObj?: DbPlayer;
   deck: string;
   deckVersion?: string;
-  deckObj?: DbDeck;
   started: boolean;
   t1SolRing: boolean;
   won: boolean;
