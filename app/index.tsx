@@ -19,18 +19,6 @@ import { useContext, useEffect, useMemo, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  halfs: {
-    flexGrow: 1,
-    flexDirection: "row",
-  },
-});
-
 const defaultData: GameData = {
   player1: {
     playerId: "",
@@ -105,7 +93,7 @@ export default function Index() {
       ...prev,
       [player]: {
         ...prev[player],
-        lifeTotal: prev[player].lifeTotal + amount,
+        lifeTotal: Math.max(0, prev[player].lifeTotal + amount),
         dead: prev[player].lifeTotal + amount <= 0,
       },
     }));
@@ -225,3 +213,15 @@ export default function Index() {
     </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  halfs: {
+    flexGrow: 1,
+    flexDirection: "row",
+  },
+});

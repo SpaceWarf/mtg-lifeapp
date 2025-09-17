@@ -1,7 +1,12 @@
 import { PfpContext } from "@/contexts/pfp-context";
 import { PlayerData } from "@/state/player-data";
 import { Colors } from "@/state/theme";
-import { faMinus, faPlus, faUserPlus } from "@fortawesome/free-solid-svg-icons";
+import {
+  faMinus,
+  faPlus,
+  faSkull,
+  faUserPlus,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { ImageBackground } from "expo-image";
 import { useContext, useEffect, useMemo, useState } from "react";
@@ -139,12 +144,18 @@ export function PlayerCard({
         source={data.deckObj?.featured || profilePictureUrl}
         contentPosition="center"
       >
+        {data.dead && (
+          <View style={styles.deadOverlay}>
+            <ThemedText />
+          </View>
+        )}
         <TouchableHighlight
-          style={[styles.buttons, styles.add]}
+          style={[styles.buttons, styles.substract]}
           underlayColor="rgba(255, 255, 255, 0.5)"
           onPress={handleSubstract}
           onLongPress={handleSubstractLong}
           onPressOut={handleSubstractOut}
+          disabled={data.dead}
         >
           <FontAwesomeIcon icon={faMinus} color={Colors.dark.text} size={30} />
         </TouchableHighlight>
@@ -159,10 +170,22 @@ export function PlayerCard({
               <ThemedText>{data.playerObj.name}</ThemedText>
             </View>
           </TouchableHighlight>
-          <View style={styles.lifeTotalContainer} pointerEvents={"box-none"}>
-            <ThemedText style={[styles.lifeTotal]}>{data.lifeTotal}</ThemedText>
-            {batch !== 0 && (
-              <ThemedText style={[styles.batch]}>{batchText}</ThemedText>
+          <View style={styles.lifeTotalContainer} pointerEvents="box-none">
+            {data.dead ? (
+              <FontAwesomeIcon
+                icon={faSkull}
+                color={Colors.dark.text}
+                size={70}
+              />
+            ) : (
+              <>
+                <ThemedText style={[styles.lifeTotal]}>
+                  {data.lifeTotal}
+                </ThemedText>
+                {batch !== 0 && (
+                  <ThemedText style={[styles.batch]}>{batchText}</ThemedText>
+                )}
+              </>
             )}
           </View>
           <View style={styles.toolsContainer}>
@@ -170,7 +193,7 @@ export function PlayerCard({
           </View>
         </View>
         <TouchableHighlight
-          style={[styles.buttons, styles.substract]}
+          style={[styles.buttons, styles.add]}
           underlayColor="rgba(255, 255, 255, 0.5)"
           onPress={handleAdd}
           onLongPress={handleAddLong}
@@ -199,21 +222,29 @@ const styles = StyleSheet.create({
     width: width,
     height: height,
   },
+  deadOverlay: {
+    position: "absolute",
+    width: "100%",
+    height: "100%",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    zIndex: 200,
+    pointerEvents: "none",
+  },
   buttons: {
     justifyContent: "center",
     flexGrow: 1,
-    backgroundColor: "rgba(0, 0, 0, 0.4)",
+    backgroundColor: "rgba(0, 0, 0, 0.3)",
   },
   add: {
-    paddingLeft: 15,
-    alignItems: "flex-start",
+    paddingRight: 15,
+    alignItems: "flex-end",
   },
   select: {
     alignItems: "center",
   },
   substract: {
-    paddingRight: 15,
-    alignItems: "flex-end",
+    paddingLeft: 15,
+    alignItems: "flex-start",
   },
   dataContainer: {
     position: "absolute",
