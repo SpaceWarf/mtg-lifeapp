@@ -36,6 +36,34 @@ export function ResetModal({
     const startedPlayers = Object.values(gameData).filter(
       (player) => player.started
     ).length;
+    const missingPlayers = Object.values(gameData).filter(
+      (player) => !player.playerId
+    ).length;
+    const missingDecks = Object.values(gameData).filter(
+      (player) => !player.deckId
+    ).length;
+    const uniquePlayers = [
+      ...new Set(Object.values(gameData).map((player) => player.playerId)),
+    ];
+    const uniqueDecks = [
+      ...new Set(Object.values(gameData).map((player) => player.deckId)),
+    ];
+
+    if (missingPlayers !== 0) {
+      return "You have not selected all players.";
+    }
+
+    if (uniquePlayers.length !== 4) {
+      return "You selected duplicate players.";
+    }
+
+    if (missingDecks !== 0) {
+      return "You have not selected all decks.";
+    }
+
+    if (uniqueDecks.length !== 4) {
+      return "You selected duplicate decks.";
+    }
 
     if (deadPlayers !== 3) {
       return "A winner was not determined for this games.";
