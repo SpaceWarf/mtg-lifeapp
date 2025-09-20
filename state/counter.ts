@@ -76,7 +76,7 @@ export const COUNTER_TYPES: Record<Counter, CounterConfig> = {
   },
   [Counter.EXPERIENCE]: {
     type: CounterType.COUNTER,
-    label: "Exp.",
+    label: "XP",
     icon: faStar,
   },
   [Counter.TREASURE]: {

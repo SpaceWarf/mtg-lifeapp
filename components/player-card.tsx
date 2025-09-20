@@ -22,7 +22,7 @@ import {
 import { PlayerTools } from "./player-tools";
 import { ThemedText } from "./themed-text";
 
-const width = Dimensions.get("window").height / 2 - 60;
+const width = Dimensions.get("window").height / 2 - 65;
 const height = Dimensions.get("window").width / 2 - 10;
 
 type OwnProps = {
@@ -277,7 +277,7 @@ const styles = StyleSheet.create({
   dataContainer: {
     position: "absolute",
     height: height - 20,
-    top: 10,
+    top: 5,
     right: "50%",
     transform: [{ translateX: "50%" }],
     alignItems: "center",

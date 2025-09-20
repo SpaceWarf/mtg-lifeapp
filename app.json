@@ -20,7 +20,8 @@
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
-      "package": "com.space_warf.mtglifeapp"
+      "package": "com.space_warf.mtglifeapp",
+      "permissions": ["VIBRATE"]
     },
     "web": {
       "output": "static",

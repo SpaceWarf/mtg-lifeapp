@@ -11,6 +11,7 @@ import {
   faXmark,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
+import * as Haptics from "expo-haptics";
 import { ImageBackground } from "expo-image";
 import { useContext, useMemo, useState } from "react";
 import {
@@ -79,6 +80,7 @@ export function PlayerToolsModal({
   };
 
   const handleCounterLongClick = (counter: Counter) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
     onCounterLongClick(counter);
   };
 

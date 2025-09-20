@@ -129,7 +129,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
-    height: 50,
+    height: 55,
   },
   commanderDamageContainer: {
     flexDirection: "row",
