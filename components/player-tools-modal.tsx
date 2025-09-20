@@ -317,7 +317,6 @@ const styles = StyleSheet.create({
     zIndex: 100,
   },
   countersContainer: {
-    alignItems: "center",
     flexDirection: "row",
     flexWrap: "wrap",
     gap: 5,
@@ -333,8 +332,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   counterWithValue: {
-    height: 75,
-    transform: [{ translateY: 15 / 2 }],
+    height: 80,
   },
   counterInner: {
     justifyContent: "space-between",
@@ -363,6 +361,7 @@ const styles = StyleSheet.create({
     width: "100%",
     height: 15,
     justifyContent: "center",
+    paddingBottom: 5,
   },
   valueContainerInner: {
     flexDirection: "row",
@@ -370,7 +369,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   valueText: {
-    fontSize: 15,
+    fontSize: 13,
     lineHeight: 11,
   },
   valueButton: {
