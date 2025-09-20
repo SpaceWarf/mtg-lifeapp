@@ -224,7 +224,6 @@ export default function Index() {
             handleCommanderDamageChange("player2", key, amount)
           }
           onPlayerSelect={() => handlePlayerSelect("player2")}
-          flipped
         />
       </View>
       <Toolbar onReset={() => setResetting(true)} />
@@ -252,7 +251,6 @@ export default function Index() {
             handleCommanderDamageChange("player4", key, amount)
           }
           onPlayerSelect={() => handlePlayerSelect("player4")}
-          flipped
         />
       </View>
     </SafeAreaView>

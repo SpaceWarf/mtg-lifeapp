@@ -6,7 +6,7 @@ import { Colors } from "@/state/theme";
 import { faMinus, faPlus, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { ImageBackground } from "expo-image";
-import { useContext, useState } from "react";
+import { useContext, useMemo, useState } from "react";
 import {
   Modal,
   Pressable,
@@ -20,7 +20,6 @@ type OwnProps = {
   playerKey: keyof GameData;
   playerData: PlayerData;
   gameData: GameData;
-  flipped?: boolean;
   onClose: () => void;
   onCommanderDamageChange: (key: keyof GameData, amount: number) => void;
 };
@@ -29,12 +28,15 @@ export function PlayerToolsModal({
   playerKey,
   playerData,
   gameData,
-  flipped,
   onClose,
   onCommanderDamageChange,
 }: OwnProps) {
   const { pfps } = useContext(PfpContext);
   const [holdTimer, setHoldTimer] = useState<number | null>(null);
+
+  const flipped = useMemo(() => {
+    return ["player2", "player4"].includes(playerKey);
+  }, [playerKey]);
 
   const handleCommanderDamageChange = (key: keyof GameData, amount: number) => {
     onCommanderDamageChange(key, amount);
@@ -68,9 +70,7 @@ export function PlayerToolsModal({
       visible
     >
       <View style={styles.centeredView}>
-        <View
-          style={[styles.modalView, styles.rotated, flipped && styles.flipped]}
-        >
+        <View style={[styles.modalView, flipped && styles.flipped]}>
           <View style={styles.actionsContainer}>
             <ThemedText style={styles.title}>Tools</ThemedText>
             <Pressable style={styles.actionButton} onPress={onClose}>
@@ -154,6 +154,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    transform: [{ rotate: "90deg" }],
   },
   modalView: {
     width: "90%",
@@ -177,10 +178,7 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   flipped: {
-    transform: [{ rotate: "-90deg" }],
-  },
-  rotated: {
-    transform: [{ rotate: "90deg" }],
+    transform: [{ rotate: "-180deg" }],
   },
   commanderDamageContainer: {
     justifyContent: "center",

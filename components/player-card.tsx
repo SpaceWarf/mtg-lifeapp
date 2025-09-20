@@ -28,7 +28,6 @@ type OwnProps = {
   playerKey: keyof GameData;
   playerData: PlayerData;
   gameData: GameData;
-  flipped?: boolean;
   onLifeTotalChange: (amount: number) => void;
   onCommanderDamageChange: (key: keyof GameData, amount: number) => void;
   onPlayerSelect: () => void;
@@ -38,7 +37,6 @@ export function PlayerCard({
   playerKey,
   playerData,
   gameData,
-  flipped,
   onLifeTotalChange,
   onCommanderDamageChange,
   onPlayerSelect,
@@ -56,6 +54,10 @@ export function PlayerCard({
     }
     return `- ${Math.abs(batch)}`;
   }, [batch]);
+
+  const flipped = useMemo(() => {
+    return ["player2", "player4"].includes(playerKey);
+  }, [playerKey]);
 
   useEffect(() => {
     if (batchTimer) {
@@ -183,7 +185,6 @@ export function PlayerCard({
             playerKey={playerKey}
             playerData={playerData}
             gameData={gameData}
-            flipped={flipped}
             onCommanderDamageChange={handleCommanderDamageChange}
           />
         </View>
@@ -252,8 +253,7 @@ const styles = StyleSheet.create({
     zIndex: 100,
   },
   playerSelect: {
-    height: 40,
-    width: 100,
+    padding: 5,
     backgroundColor: "rgba(56, 56, 56, 0.9)",
     justifyContent: "center",
     alignItems: "center",

@@ -3,16 +3,6 @@ import { faRotateRight } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { StyleSheet, TouchableHighlight, View } from "react-native";
 
-const styles = StyleSheet.create({
-  toolbar: {
-    height: 30,
-    width: "100%",
-    paddingTop: 10,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-});
-
 type OwnProps = {
   onReset: () => void;
 };
@@ -20,7 +10,7 @@ type OwnProps = {
 export function Toolbar({ onReset }: OwnProps) {
   return (
     <View style={styles.toolbar}>
-      <TouchableHighlight onPress={onReset}>
+      <TouchableHighlight onPress={onReset} style={styles.button}>
         <FontAwesomeIcon
           icon={faRotateRight}
           color={Colors.dark.text}
@@ -30,3 +20,16 @@ export function Toolbar({ onReset }: OwnProps) {
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  toolbar: {
+    height: 30,
+    width: "100%",
+    paddingTop: 10,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  button: {
+    padding: 3,
+  },
+});

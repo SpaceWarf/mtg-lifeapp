@@ -12,7 +12,6 @@ type OwnProps = {
   playerKey: keyof GameData;
   playerData: PlayerData;
   gameData: GameData;
-  flipped?: boolean;
   onCommanderDamageChange: (key: keyof GameData, amount: number) => void;
 };
 
@@ -20,7 +19,6 @@ export function PlayerTools({
   playerKey,
   playerData,
   gameData,
-  flipped,
   onCommanderDamageChange,
 }: OwnProps) {
   const { pfps } = useContext(PfpContext);
@@ -37,7 +35,6 @@ export function PlayerTools({
           playerKey={playerKey}
           playerData={playerData}
           gameData={gameData}
-          flipped={flipped}
           onClose={() => setModalOpen(false)}
           onCommanderDamageChange={handleCommanderDamageChange}
         />
