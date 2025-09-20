@@ -1,4 +1,6 @@
+import { Counter } from "./counters";
 import { DbDeck } from "./deck";
+import { GameData } from "./game-data";
 import { DbPlayer } from "./player";
 
 export interface PlayerData {
@@ -11,4 +13,6 @@ export interface PlayerData {
   dead: boolean;
   started: boolean;
   t1SolRing: boolean;
+  commanderDamage: Record<keyof GameData, number>;
+  counters: Record<Counter, number>;
 }

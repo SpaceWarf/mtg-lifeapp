@@ -4,10 +4,12 @@ import { ResetModal } from "@/components/reset-modal";
 import { Toolbar } from "@/components/toolbar";
 import { PfpContext } from "@/contexts/pfp-context";
 import { usePlayers } from "@/hooks/use-players";
+import { Counter } from "@/state/counters";
 import { DbDeck } from "@/state/deck";
 import { Game } from "@/state/game";
 import { GameData } from "@/state/game-data";
 import { DbPlayer } from "@/state/player";
+import { PlayerData } from "@/state/player-data";
 import { gameDataToGame } from "@/utils/game";
 import {
   getProfilePictureUrl,
@@ -15,43 +17,26 @@ import {
   saveGameData,
 } from "@/utils/storage";
 import { cloneDeep } from "lodash";
-import { useContext, useEffect, useMemo, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+const defaultPlayerdata: PlayerData = {
+  playerId: "",
+  deckId: "",
+  lifeTotal: 40,
+  dead: false,
+  started: false,
+  t1SolRing: false,
+  commanderDamage: {} as Record<keyof GameData, number>,
+  counters: {} as Record<Counter, number>,
+};
+
 const defaultData: GameData = {
-  player1: {
-    playerId: "",
-    deckId: "",
-    lifeTotal: 40,
-    dead: false,
-    started: false,
-    t1SolRing: false,
-  },
-  player2: {
-    playerId: "",
-    deckId: "",
-    lifeTotal: 40,
-    dead: false,
-    started: false,
-    t1SolRing: false,
-  },
-  player3: {
-    playerId: "",
-    deckId: "",
-    lifeTotal: 40,
-    dead: false,
-    started: false,
-    t1SolRing: false,
-  },
-  player4: {
-    playerId: "",
-    deckId: "",
-    lifeTotal: 40,
-    dead: false,
-    started: false,
-    t1SolRing: false,
-  },
+  player1: cloneDeep(defaultPlayerdata),
+  player2: cloneDeep(defaultPlayerdata),
+  player3: cloneDeep(defaultPlayerdata),
+  player4: cloneDeep(defaultPlayerdata),
 };
 
 export default function Index() {
@@ -99,12 +84,66 @@ export default function Index() {
     }));
   };
 
+  const handleCommanderDamageChange = (
+    player: keyof GameData,
+    key: keyof GameData,
+    amount: number
+  ) => {
+    setData((prev) => {
+      const newCommanderDamage =
+        (prev[player].commanderDamage[key] || 0) + amount;
+      const commanderDamageAdjustment =
+        newCommanderDamage < 0 ? -newCommanderDamage : 0;
+      const newLifeTotal = Math.max(
+        0,
+        prev[player].lifeTotal - amount - commanderDamageAdjustment
+      );
+      const newDead = newLifeTotal <= 0 || newCommanderDamage >= 21;
+      return {
+        ...prev,
+        [player]: {
+          ...prev[player],
+          lifeTotal: newLifeTotal,
+          dead: newDead,
+          commanderDamage: {
+            ...prev[player].commanderDamage,
+            [key]: newCommanderDamage + commanderDamageAdjustment,
+          },
+        },
+      };
+    });
+  };
+
   const handleReset = () => {
     setData({
-      player1: { ...data["player1"], lifeTotal: 40, dead: false },
-      player2: { ...data["player2"], lifeTotal: 40, dead: false },
-      player3: { ...data["player3"], lifeTotal: 40, dead: false },
-      player4: { ...data["player4"], lifeTotal: 40, dead: false },
+      player1: {
+        ...defaultPlayerdata,
+        playerId: data["player1"].playerId,
+        playerObj: data["player1"].playerObj,
+        deckId: data["player1"].deckId,
+        deckObj: data["player1"].deckObj,
+      },
+      player2: {
+        ...defaultPlayerdata,
+        playerId: data["player2"].playerId,
+        playerObj: data["player2"].playerObj,
+        deckId: data["player2"].deckId,
+        deckObj: data["player2"].deckObj,
+      },
+      player3: {
+        ...defaultPlayerdata,
+        playerId: data["player3"].playerId,
+        playerObj: data["player3"].playerObj,
+        deckId: data["player3"].deckId,
+        deckObj: data["player3"].deckObj,
+      },
+      player4: {
+        ...defaultPlayerdata,
+        playerId: data["player4"].playerId,
+        playerObj: data["player4"].playerObj,
+        deckId: data["player4"].deckId,
+        deckObj: data["player4"].deckObj,
+      },
     });
     setResetting(false);
   };
@@ -142,19 +181,6 @@ export default function Index() {
     }));
   };
 
-  const canSave = useMemo(() => {
-    return (
-      !!data.player1.playerId &&
-      !!data.player2.playerId &&
-      !!data.player3.playerId &&
-      !!data.player4.playerId &&
-      !!data.player1.deckId &&
-      !!data.player2.deckId &&
-      !!data.player3.deckId &&
-      !!data.player4.deckId
-    );
-  }, [data]);
-
   return (
     <SafeAreaView style={styles.container}>
       {selectedPlayer && (
@@ -169,7 +195,6 @@ export default function Index() {
       {resetting && (
         <ResetModal
           gameData={data}
-          canSave={canSave}
           onClose={() => setResetting(false)}
           onReset={handleReset}
           onResetAndSave={handleResetAndSave}
@@ -177,16 +202,26 @@ export default function Index() {
       )}
       <View style={styles.halfs}>
         <PlayerCard
-          data={data.player1}
+          playerKey="player1"
+          playerData={data.player1}
+          gameData={data}
           onLifeTotalChange={(amount) =>
             handleLifeTotalChange("player1", amount)
+          }
+          onCommanderDamageChange={(key, amount) =>
+            handleCommanderDamageChange("player1", key, amount)
           }
           onPlayerSelect={() => handlePlayerSelect("player1")}
         />
         <PlayerCard
-          data={data.player2}
+          playerKey="player2"
+          playerData={data.player2}
+          gameData={data}
           onLifeTotalChange={(amount) =>
             handleLifeTotalChange("player2", amount)
+          }
+          onCommanderDamageChange={(key, amount) =>
+            handleCommanderDamageChange("player2", key, amount)
           }
           onPlayerSelect={() => handlePlayerSelect("player2")}
           flipped
@@ -195,16 +230,26 @@ export default function Index() {
       <Toolbar onReset={() => setResetting(true)} />
       <View style={styles.halfs}>
         <PlayerCard
-          data={data.player3}
+          playerKey="player3"
+          playerData={data.player3}
+          gameData={data}
           onLifeTotalChange={(amount) =>
             handleLifeTotalChange("player3", amount)
+          }
+          onCommanderDamageChange={(key, amount) =>
+            handleCommanderDamageChange("player3", key, amount)
           }
           onPlayerSelect={() => handlePlayerSelect("player3")}
         />
         <PlayerCard
-          data={data.player4}
+          playerKey="player4"
+          playerData={data.player4}
+          gameData={data}
           onLifeTotalChange={(amount) =>
             handleLifeTotalChange("player4", amount)
+          }
+          onCommanderDamageChange={(key, amount) =>
+            handleCommanderDamageChange("player4", key, amount)
           }
           onPlayerSelect={() => handlePlayerSelect("player4")}
           flipped

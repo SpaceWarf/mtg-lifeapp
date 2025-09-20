@@ -1,4 +1,5 @@
 import { PfpContext } from "@/contexts/pfp-context";
+import { GameData } from "@/state/game-data";
 import { PlayerData } from "@/state/player-data";
 import { Colors } from "@/state/theme";
 import {
@@ -17,26 +18,33 @@ import {
   TouchableHighlight,
   View,
 } from "react-native";
+import { PlayerTools } from "./player-tools";
 import { ThemedText } from "./themed-text";
 
 const width = Dimensions.get("window").height / 2 - 60;
 const height = Dimensions.get("window").width / 2 - 10;
 
 type OwnProps = {
-  data: PlayerData;
+  playerKey: keyof GameData;
+  playerData: PlayerData;
+  gameData: GameData;
   flipped?: boolean;
   onLifeTotalChange: (amount: number) => void;
+  onCommanderDamageChange: (key: keyof GameData, amount: number) => void;
   onPlayerSelect: () => void;
 };
 
 export function PlayerCard({
-  data,
+  playerKey,
+  playerData,
+  gameData,
   flipped,
   onLifeTotalChange,
+  onCommanderDamageChange,
   onPlayerSelect,
 }: OwnProps) {
   const { pfps } = useContext(PfpContext);
-  const profilePictureUrl = pfps[data.playerId];
+  const profilePictureUrl = pfps[playerData.playerId];
 
   const [batch, setBatch] = useState(0);
   const [holdTimer, setHoldTimer] = useState<number | null>(null);
@@ -71,53 +79,36 @@ export function PlayerCard({
     setBatch((prev) => prev + amount);
   };
 
-  const handleAdd = () => {
-    updateLifeTotal(1);
+  const handleLifeChange = (amount: number) => {
+    updateLifeTotal(amount);
   };
 
-  const handleAddLong = () => {
-    updateLifeTotal(10);
+  const handleLifeChangeLong = (amount: number) => {
+    updateLifeTotal(amount);
 
     const timer = setInterval(() => {
-      updateLifeTotal(10);
+      updateLifeTotal(amount);
     }, 500);
 
     setHoldTimer(timer);
   };
 
-  const handleAddOut = () => {
+  const handleLifeChangeOut = () => {
     if (holdTimer) {
       clearInterval(holdTimer);
       setHoldTimer(null);
     }
   };
 
-  const handleSubstract = () => {
-    updateLifeTotal(-1);
-  };
-
-  const handleSubstractLong = () => {
-    updateLifeTotal(-10);
-
-    const timer = setInterval(() => {
-      updateLifeTotal(-10);
-    }, 500);
-
-    setHoldTimer(timer);
-  };
-
-  const handleSubstractOut = () => {
-    if (holdTimer) {
-      clearInterval(holdTimer);
-      setHoldTimer(null);
-    }
+  const handleCommanderDamageChange = (key: keyof GameData, amount: number) => {
+    onCommanderDamageChange(key, amount);
   };
 
   const handlePlayerSelect = () => {
     onPlayerSelect();
   };
 
-  if (!data.playerObj) {
+  if (!playerData.playerObj) {
     return (
       <View
         style={[styles.container, styles.rotated, flipped && styles.flipped]}
@@ -141,10 +132,10 @@ export function PlayerCard({
     <View style={[styles.container, styles.rotated, flipped && styles.flipped]}>
       <ImageBackground
         style={styles.imageBackground}
-        source={data.deckObj?.featured || profilePictureUrl}
+        source={playerData.deckObj?.featured || profilePictureUrl}
         contentPosition="center"
       >
-        {data.dead && (
+        {playerData.dead && (
           <View style={styles.deadOverlay}>
             <ThemedText />
           </View>
@@ -152,14 +143,14 @@ export function PlayerCard({
         <TouchableHighlight
           style={[styles.buttons, styles.substract]}
           underlayColor="rgba(255, 255, 255, 0.5)"
-          onPress={handleSubstract}
-          onLongPress={handleSubstractLong}
-          onPressOut={handleSubstractOut}
-          disabled={data.dead}
+          onPress={() => handleLifeChange(-1)}
+          onLongPress={() => handleLifeChangeLong(-10)}
+          onPressOut={handleLifeChangeOut}
+          disabled={playerData.dead}
         >
           <FontAwesomeIcon icon={faMinus} color={Colors.dark.text} size={30} />
         </TouchableHighlight>
-        <View style={[styles.dataContainer]}>
+        <View style={styles.dataContainer}>
           <TouchableHighlight
             style={[styles.playerSelect]}
             underlayColor="rgba(56, 56, 56, 0.5)"
@@ -167,11 +158,11 @@ export function PlayerCard({
           >
             <View style={styles.playerSelectContent}>
               <Image source={{ uri: profilePictureUrl }} style={styles.pfp} />
-              <ThemedText>{data.playerObj.name}</ThemedText>
+              <ThemedText>{playerData.playerObj.name}</ThemedText>
             </View>
           </TouchableHighlight>
           <View style={styles.lifeTotalContainer} pointerEvents="box-none">
-            {data.dead ? (
+            {playerData.dead ? (
               <FontAwesomeIcon
                 icon={faSkull}
                 color={Colors.dark.text}
@@ -180,7 +171,7 @@ export function PlayerCard({
             ) : (
               <>
                 <ThemedText style={[styles.lifeTotal]}>
-                  {data.lifeTotal}
+                  {playerData.lifeTotal}
                 </ThemedText>
                 {batch !== 0 && (
                   <ThemedText style={[styles.batch]}>{batchText}</ThemedText>
@@ -188,16 +179,20 @@ export function PlayerCard({
               </>
             )}
           </View>
-          <View style={styles.toolsContainer}>
-            <ThemedText>Tools</ThemedText>
-          </View>
+          <PlayerTools
+            playerKey={playerKey}
+            playerData={playerData}
+            gameData={gameData}
+            flipped={flipped}
+            onCommanderDamageChange={handleCommanderDamageChange}
+          />
         </View>
         <TouchableHighlight
           style={[styles.buttons, styles.add]}
           underlayColor="rgba(255, 255, 255, 0.5)"
-          onPress={handleAdd}
-          onLongPress={handleAddLong}
-          onPressOut={handleAddOut}
+          onPress={() => handleLifeChange(1)}
+          onLongPress={() => handleLifeChangeLong(10)}
+          onPressOut={handleLifeChangeOut}
         >
           <FontAwesomeIcon icon={faPlus} color={Colors.dark.text} size={30} />
         </TouchableHighlight>
@@ -306,14 +301,6 @@ const styles = StyleSheet.create({
     textShadowColor: "black",
     textShadowOffset: { width: 1, height: 1 },
     textShadowRadius: 1,
-  },
-  toolsContainer: {
-    flexGrow: 1,
-    width: 100,
-    backgroundColor: "blue",
-    justifyContent: "center",
-    alignItems: "center",
-    borderRadius: 10,
   },
   flipped: {
     transform: [

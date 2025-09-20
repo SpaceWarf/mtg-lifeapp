@@ -22,12 +22,24 @@ type OwnProps = {
 
 export function ResetModal({
   gameData,
-  canSave,
   onClose,
   onReset,
   onResetAndSave,
 }: OwnProps) {
   const [saving, setSaving] = useState(false);
+
+  const canSave = useMemo(() => {
+    return (
+      !!gameData.player1.playerId &&
+      !!gameData.player2.playerId &&
+      !!gameData.player3.playerId &&
+      !!gameData.player4.playerId &&
+      !!gameData.player1.deckId &&
+      !!gameData.player2.deckId &&
+      !!gameData.player3.deckId &&
+      !!gameData.player4.deckId
+    );
+  }, [gameData]);
 
   const gameDataError = useMemo(() => {
     const deadPlayers = Object.values(gameData).filter(
