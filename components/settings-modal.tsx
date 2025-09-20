@@ -1,13 +1,16 @@
 import { AuthContext } from "@/contexts/auth-context";
 import { Colors } from "@/state/theme";
+import { clearGameData } from "@/utils/storage";
 import {
   faArrowRightFromBracket,
   faCheck,
   faLeftLong,
+  faTrash,
   faUserCircle,
   faXmark,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
+import { reloadAppAsync } from "expo";
 import { useContext, useState } from "react";
 import {
   Modal,
@@ -55,6 +58,12 @@ export function SettingsModal({ onClose }: OwnProps) {
   const handleLogout = async () => {
     await logout();
     setViewLogin(false);
+  };
+
+  const handleClearData = async () => {
+    await logout();
+    await clearGameData();
+    reloadAppAsync();
   };
 
   if (viewLogin) {
@@ -190,6 +199,19 @@ export function SettingsModal({ onClose }: OwnProps) {
               </View>
             </Pressable>
           )}
+          <Pressable
+            style={[styles.button, styles.buttonNegative]}
+            onPress={handleClearData}
+          >
+            <View style={styles.buttonContent}>
+              <FontAwesomeIcon
+                icon={faTrash}
+                color={Colors.dark.text}
+                size={20}
+              />
+              <ThemedText>Clear All Data</ThemedText>
+            </View>
+          </Pressable>
         </View>
       </View>
     </Modal>
@@ -245,9 +267,13 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(56, 56, 56, 0.9)",
     padding: 15,
     borderRadius: 10,
+    marginTop: 10,
   },
   buttonPrimary: {
     backgroundColor: "rgb(30, 50, 80)",
+  },
+  buttonNegative: {
+    backgroundColor: "rgb(100, 30, 30)",
   },
   disabled: {
     opacity: 0.5,

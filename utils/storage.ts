@@ -32,3 +32,11 @@ export async function loadGameData(): Promise<GameData | null> {
     return null;
   }
 }
+
+export async function clearGameData() {
+  try {
+    await AsyncStorage.removeItem("game-data");
+  } catch (e: any) {
+    console.error("Could not clear game data.", e);
+  }
+}
