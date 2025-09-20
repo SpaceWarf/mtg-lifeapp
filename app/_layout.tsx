@@ -1,3 +1,4 @@
+import { AuthProvider } from "@/contexts/auth-provider";
 import { DataProvider } from "@/contexts/data-provider";
 import { PfpProvider } from "@/contexts/pfp-provider";
 import { useColorScheme } from "@/hooks/use-color-scheme";
@@ -25,13 +26,15 @@ export default function RootLayout() {
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
       <SafeAreaProvider>
-        <QueryClientProvider client={queryClient}>
-          <DataProvider>
-            <PfpProvider>
-              <Stack screenOptions={{ headerShown: false }} />
-            </PfpProvider>
-          </DataProvider>
-        </QueryClientProvider>
+        <AuthProvider>
+          <QueryClientProvider client={queryClient}>
+            <DataProvider>
+              <PfpProvider>
+                <Stack screenOptions={{ headerShown: false }} />
+              </PfpProvider>
+            </DataProvider>
+          </QueryClientProvider>
+        </AuthProvider>
       </SafeAreaProvider>
     </ThemeProvider>
   );

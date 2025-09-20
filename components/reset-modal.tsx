@@ -1,3 +1,4 @@
+import { AuthContext } from "@/contexts/auth-context";
 import { GameData } from "@/state/game-data";
 import { Colors } from "@/state/theme";
 import {
@@ -7,7 +8,7 @@ import {
   faXmark,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import { useMemo, useState } from "react";
+import { useContext, useMemo, useState } from "react";
 import {
   Modal,
   Pressable,
@@ -32,6 +33,7 @@ export function ResetModal({
   onReset,
   onResetAndSave,
 }: OwnProps) {
+  const { user } = useContext(AuthContext);
   const [saving, setSaving] = useState(false);
 
   const canSave = useMemo(() => {
@@ -138,26 +140,32 @@ export function ResetModal({
             {gameDataError && (
               <ThemedText style={styles.error}>{gameDataError}</ThemedText>
             )}
-            <Pressable
-              style={[styles.button, !!gameDataError && styles.disabled]}
-              onPress={onResetAndSave}
-              disabled={!!gameDataError}
-            >
-              <FontAwesomeIcon
-                icon={faSave}
-                color={Colors.dark.text}
-                size={20}
-              />
-              <ThemedText>Save</ThemedText>
-            </Pressable>
-            <Pressable style={styles.button} onPress={() => setSaving(false)}>
-              <FontAwesomeIcon
-                icon={faLeftLong}
-                color={Colors.dark.text}
-                size={20}
-              />
-              <ThemedText>Back</ThemedText>
-            </Pressable>
+            <View style={styles.buttonsContainer}>
+              <Pressable style={styles.button} onPress={() => setSaving(false)}>
+                <FontAwesomeIcon
+                  icon={faLeftLong}
+                  color={Colors.dark.text}
+                  size={20}
+                />
+                <ThemedText>Back</ThemedText>
+              </Pressable>
+              <Pressable
+                style={[
+                  styles.button,
+                  styles.buttonPrimary,
+                  !!gameDataError && styles.disabled,
+                ]}
+                onPress={onResetAndSave}
+                disabled={!!gameDataError}
+              >
+                <FontAwesomeIcon
+                  icon={faSave}
+                  color={Colors.dark.text}
+                  size={20}
+                />
+                <ThemedText>Save</ThemedText>
+              </Pressable>
+            </View>
           </View>
         </View>
       </Modal>
@@ -192,9 +200,10 @@ export function ResetModal({
             </View>
           </View>
           <ThemedText style={styles.description}>
-            Resetting will set the life totals back to 40. You can also reset
-            and save the data to the database. You can only save if all players
-            and decks are selected.
+            Resetting will set the life totals back to 40.{" "}
+            {user
+              ? "You can also reset and save the data to the database. You can only save if all players and decks are selected."
+              : ""}
           </ThemedText>
           <Pressable style={styles.button} onPress={onReset}>
             <FontAwesomeIcon
@@ -204,14 +213,20 @@ export function ResetModal({
             />
             <ThemedText>Reset</ThemedText>
           </Pressable>
-          <Pressable
-            style={[styles.button, !canSave && styles.disabled]}
-            onPress={() => setSaving(true)}
-            disabled={!canSave}
-          >
-            <FontAwesomeIcon icon={faSave} color={Colors.dark.text} size={20} />
-            <ThemedText>Reset & Save</ThemedText>
-          </Pressable>
+          {user && (
+            <Pressable
+              style={[styles.button, !canSave && styles.disabled]}
+              onPress={() => setSaving(true)}
+              disabled={!canSave}
+            >
+              <FontAwesomeIcon
+                icon={faSave}
+                color={Colors.dark.text}
+                size={20}
+              />
+              <ThemedText>Reset & Save</ThemedText>
+            </Pressable>
+          )}
         </View>
       </View>
     </Modal>
@@ -266,6 +281,12 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     marginLeft: 10,
   },
+  buttonsContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    gap: 5,
+  },
   button: {
     flexDirection: "row",
     alignItems: "center",
@@ -274,6 +295,9 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(56, 56, 56, 0.9)",
     padding: 15,
     borderRadius: 10,
+  },
+  buttonPrimary: {
+    backgroundColor: "rgb(30, 50, 80)",
   },
   disabled: {
     opacity: 0.5,
