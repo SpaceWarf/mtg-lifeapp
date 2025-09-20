@@ -55,7 +55,7 @@ export function Toolbar({ gameData, onReset, onDayNightChange }: OwnProps) {
 const styles = StyleSheet.create({
   toolbar: {
     flexDirection: "row",
-    gap: 10,
+    gap: 25,
     height: 30,
     width: "100%",
     paddingTop: 10,

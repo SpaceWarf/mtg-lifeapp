@@ -165,6 +165,11 @@ export default function Index() {
   };
 
   const handleToggleChange = (player: keyof GameData, counter: Counter) => {
+    if ([Counter.MONARCH, Counter.INITIATIVE].includes(counter)) {
+      handleToggleChangeForAllPlayers(player, counter);
+      return;
+    }
+
     setData((prev) => ({
       ...prev,
       [player]: {
@@ -181,9 +186,61 @@ export default function Index() {
     }));
   };
 
+  const handleToggleChangeForAllPlayers = (
+    self: keyof GameData,
+    counter: Counter
+  ) => {
+    setData((prev) => {
+      const selfValue = !prev[self].counters[counter]?.enabled;
+      return {
+        ...prev,
+        ["player1"]: {
+          ...prev["player1"],
+          counters: {
+            ...prev["player1"].counters,
+            [counter]: {
+              ...prev["player1"].counters[counter],
+              enabled: self === "player1" ? selfValue : false,
+            },
+          },
+        },
+        ["player2"]: {
+          ...prev["player2"],
+          counters: {
+            ...prev["player2"].counters,
+            [counter]: {
+              ...prev["player2"].counters[counter],
+              enabled: self === "player2" ? selfValue : false,
+            },
+          },
+        },
+        ["player3"]: {
+          ...prev["player3"],
+          counters: {
+            ...prev["player3"].counters,
+            [counter]: {
+              ...prev["player3"].counters[counter],
+              enabled: self === "player3" ? selfValue : false,
+            },
+          },
+        },
+        ["player4"]: {
+          ...prev["player4"],
+          counters: {
+            ...prev["player4"].counters,
+            [counter]: {
+              ...prev["player4"].counters[counter],
+              enabled: self === "player4" ? selfValue : false,
+            },
+          },
+        },
+      };
+    });
+  };
+
   const handleSwitchChange = (player: keyof GameData, counter: Counter) => {
-    if (counter === Counter.DAY_NIGHT) {
-      handleDayNightChange(player);
+    if ([Counter.DAY_NIGHT].includes(counter)) {
+      handleSwitchChangeForAllPlayers(player, counter);
       return;
     }
 
@@ -224,10 +281,13 @@ export default function Index() {
     });
   };
 
-  const handleDayNightChange = (player: keyof GameData) => {
+  const handleSwitchChangeForAllPlayers = (
+    player: keyof GameData,
+    counter: Counter
+  ) => {
     setData((prev) => {
-      const prevEnabled = prev[player].counters[Counter.DAY_NIGHT]?.enabled;
-      const prevSwitched = prev[player].counters[Counter.DAY_NIGHT]?.switched;
+      const prevEnabled = prev[player].counters[counter]?.enabled;
+      const prevSwitched = prev[player].counters[counter]?.switched;
 
       if (!prevEnabled) {
         return {
@@ -236,8 +296,8 @@ export default function Index() {
             ...prev["player1"],
             counters: {
               ...prev["player1"].counters,
-              [Counter.DAY_NIGHT]: {
-                ...prev["player1"].counters[Counter.DAY_NIGHT],
+              [counter]: {
+                ...prev["player1"].counters[counter],
                 enabled: true,
               },
             },
@@ -246,8 +306,8 @@ export default function Index() {
             ...prev["player2"],
             counters: {
               ...prev["player2"].counters,
-              [Counter.DAY_NIGHT]: {
-                ...prev["player2"].counters[Counter.DAY_NIGHT],
+              [counter]: {
+                ...prev["player2"].counters[counter],
                 enabled: true,
               },
             },
@@ -256,8 +316,8 @@ export default function Index() {
             ...prev["player3"],
             counters: {
               ...prev["player3"].counters,
-              [Counter.DAY_NIGHT]: {
-                ...prev["player3"].counters[Counter.DAY_NIGHT],
+              [counter]: {
+                ...prev["player3"].counters[counter],
                 enabled: true,
               },
             },
@@ -266,8 +326,8 @@ export default function Index() {
             ...prev["player4"],
             counters: {
               ...prev["player4"].counters,
-              [Counter.DAY_NIGHT]: {
-                ...prev["player4"].counters[Counter.DAY_NIGHT],
+              [counter]: {
+                ...prev["player4"].counters[counter],
                 enabled: true,
               },
             },
@@ -376,8 +436,8 @@ export default function Index() {
   };
 
   const handleSwitchLongChange = (player: keyof GameData, counter: Counter) => {
-    if (counter === Counter.DAY_NIGHT) {
-      handleDayNightLongChange(player);
+    if ([Counter.DAY_NIGHT].includes(counter)) {
+      handleSwitchLongChangeForAllPlayers(player, counter);
       return;
     }
 
@@ -399,7 +459,10 @@ export default function Index() {
     });
   };
 
-  const handleDayNightLongChange = (player: keyof GameData) => {
+  const handleSwitchLongChangeForAllPlayers = (
+    player: keyof GameData,
+    counter: Counter
+  ) => {
     setData((prev) => {
       return {
         ...prev,
@@ -407,8 +470,8 @@ export default function Index() {
           ...prev["player1"],
           counters: {
             ...prev["player1"].counters,
-            [Counter.DAY_NIGHT]: {
-              ...prev["player1"].counters[Counter.DAY_NIGHT],
+            [counter]: {
+              ...prev["player1"].counters[counter],
               enabled: false,
               switched: false,
             },
@@ -418,8 +481,8 @@ export default function Index() {
           ...prev["player2"],
           counters: {
             ...prev["player2"].counters,
-            [Counter.DAY_NIGHT]: {
-              ...prev["player2"].counters[Counter.DAY_NIGHT],
+            [counter]: {
+              ...prev["player2"].counters[counter],
               enabled: false,
               switched: false,
             },
@@ -429,8 +492,8 @@ export default function Index() {
           ...prev["player3"],
           counters: {
             ...prev["player3"].counters,
-            [Counter.DAY_NIGHT]: {
-              ...prev["player3"].counters[Counter.DAY_NIGHT],
+            [counter]: {
+              ...prev["player3"].counters[counter],
               enabled: false,
               switched: false,
             },
@@ -440,8 +503,8 @@ export default function Index() {
           ...prev["player4"],
           counters: {
             ...prev["player4"].counters,
-            [Counter.DAY_NIGHT]: {
-              ...prev["player4"].counters[Counter.DAY_NIGHT],
+            [counter]: {
+              ...prev["player4"].counters[counter],
               enabled: false,
               switched: false,
             },
@@ -598,7 +661,9 @@ export default function Index() {
       <Toolbar
         gameData={data}
         onReset={() => setResetting(true)}
-        onDayNightChange={() => handleDayNightChange("player1")}
+        onDayNightChange={() =>
+          handleSwitchChangeForAllPlayers("player1", Counter.DAY_NIGHT)
+        }
       />
       <View style={styles.halfs}>
         <PlayerCard
