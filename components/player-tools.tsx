@@ -1,8 +1,10 @@
 import { PfpContext } from "@/contexts/pfp-context";
-import { Counter } from "@/state/counter";
+import { Counter, COUNTER_TYPES } from "@/state/counter";
 import { GameData } from "@/state/game-data";
 import { PlayerData } from "@/state/player-data";
 import { PLAYER_ORDER } from "@/state/player-order";
+import { Colors } from "@/state/theme";
+import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { ImageBackground } from "expo-image";
 import { useContext, useState } from "react";
 import { StyleSheet, TouchableHighlight, View } from "react-native";
@@ -67,21 +69,48 @@ export function PlayerTools({
         onPress={() => setModalOpen(true)}
       >
         <View style={styles.triggerContainer}>
-          {PLAYER_ORDER[playerKey].map((key) => (
-            <ImageBackground
-              key={key}
-              style={styles.imageBackground}
-              source={
-                gameData[key].deckObj?.featured || pfps[gameData[key].playerId]
-              }
-            >
-              <ThemedText style={styles.imageText}>
-                {key === playerKey
-                  ? "me"
-                  : playerData.commanderDamage[key as keyof GameData] ?? 0}
-              </ThemedText>
-            </ImageBackground>
-          ))}
+          <View style={styles.commanderDamageContainer}>
+            {PLAYER_ORDER[playerKey].map((key) => (
+              <ImageBackground
+                key={key}
+                style={styles.imageBackground}
+                source={
+                  gameData[key].deckObj?.featured ||
+                  pfps[gameData[key].playerId]
+                }
+              >
+                <ThemedText style={styles.imageText}>
+                  {key === playerKey
+                    ? "me"
+                    : playerData.commanderDamage[key as keyof GameData] ?? 0}
+                </ThemedText>
+              </ImageBackground>
+            ))}
+          </View>
+          {Object.values(Counter)
+            .filter(
+              (counter) =>
+                gameData[playerKey].counters[counter]?.enabled &&
+                ![
+                  Counter.MONARCH,
+                  Counter.INITIATIVE,
+                  Counter.DAY_NIGHT,
+                ].includes(counter)
+            )
+            .map((counter) => (
+              <View key={`${playerKey}-${counter}`} style={styles.counter}>
+                <FontAwesomeIcon
+                  icon={COUNTER_TYPES[counter].icon}
+                  color={Colors.dark.text}
+                  size={20}
+                />
+                {gameData[playerKey].counters[counter]?.value > 0 && (
+                  <ThemedText style={styles.counterValue}>
+                    {gameData[playerKey].counters[counter]?.value}
+                  </ThemedText>
+                )}
+              </View>
+            ))}
         </View>
       </TouchableHighlight>
     </>
@@ -90,7 +119,6 @@ export function PlayerTools({
 
 const styles = StyleSheet.create({
   trigger: {
-    width: 100,
     padding: 3,
     justifyContent: "center",
     alignItems: "center",
@@ -99,10 +127,28 @@ const styles = StyleSheet.create({
   },
   triggerContainer: {
     flexDirection: "row",
-    flexWrap: "wrap",
     justifyContent: "center",
     alignItems: "center",
     height: 50,
+  },
+  commanderDamageContainer: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "center",
+    alignItems: "center",
+    width: 100,
+  },
+  counter: {
+    width: 30,
+    height: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 5,
+    padding: 5,
+  },
+  counterValue: {
+    fontSize: 10,
+    lineHeight: 11,
   },
   imageBackground: {
     justifyContent: "center",

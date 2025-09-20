@@ -1,8 +1,8 @@
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import {
   faBolt,
+  faChessKing,
   faChessRook,
-  faCrown,
   faDungeon,
   faGem,
   faMoon,
@@ -51,7 +51,7 @@ export const COUNTER_TYPES: Record<Counter, CounterConfig> = {
   [Counter.MONARCH]: {
     type: CounterType.TOGGLE,
     label: "Monarch",
-    icon: faCrown,
+    icon: faChessKing,
   },
   [Counter.INITIATIVE]: {
     type: CounterType.TOGGLE,

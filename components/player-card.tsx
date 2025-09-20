@@ -1,5 +1,5 @@
 import { PfpContext } from "@/contexts/pfp-context";
-import { Counter } from "@/state/counter";
+import { Counter, COUNTER_TYPES } from "@/state/counter";
 import { GameData } from "@/state/game-data";
 import { PlayerData } from "@/state/player-data";
 import { Colors } from "@/state/theme";
@@ -176,6 +176,20 @@ export function PlayerCard({
             <View style={styles.playerSelectContent}>
               <Image source={{ uri: profilePictureUrl }} style={styles.pfp} />
               <ThemedText>{playerData.playerObj.name}</ThemedText>
+              {gameData[playerKey].counters[Counter.MONARCH]?.enabled && (
+                <FontAwesomeIcon
+                  icon={COUNTER_TYPES[Counter.MONARCH].icon}
+                  color={Colors.dark.text}
+                  size={20}
+                />
+              )}
+              {gameData[playerKey].counters[Counter.INITIATIVE]?.enabled && (
+                <FontAwesomeIcon
+                  icon={COUNTER_TYPES[Counter.INITIATIVE].icon}
+                  color={Colors.dark.text}
+                  size={20}
+                />
+              )}
             </View>
           </TouchableHighlight>
           <View style={styles.lifeTotalContainer} pointerEvents="box-none">
