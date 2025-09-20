@@ -19,6 +19,7 @@ import {
   Pressable,
   StyleSheet,
   TouchableHighlight,
+  TouchableOpacity,
   View,
 } from "react-native";
 import { ThemedText } from "./themed-text";
@@ -95,6 +96,9 @@ export function PlayerToolsModal({
       backdropColor="rgba(0, 0, 0, 0.4)"
       visible
     >
+      <TouchableOpacity style={styles.backdrop} onPress={onClose}>
+        <ThemedText />
+      </TouchableOpacity>
       <View style={styles.centeredView}>
         <View style={[styles.modalView, flipped && styles.flipped]}>
           <View style={styles.actionsContainer}>
@@ -244,6 +248,13 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     transform: [{ rotate: "90deg" }],
+  },
+  backdrop: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
   },
   modalView: {
     width: 420,

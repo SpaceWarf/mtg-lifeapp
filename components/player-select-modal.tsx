@@ -22,6 +22,7 @@ import {
   StyleSheet,
   TextInput,
   TouchableHighlight,
+  TouchableOpacity,
   View,
 } from "react-native";
 import { ThemedText } from "./themed-text";
@@ -61,6 +62,9 @@ export function PlayerSelectModal({
       backdropColor="rgba(0, 0, 0, 0.4)"
       visible
     >
+      <TouchableOpacity style={styles.backdrop} onPress={onClose}>
+        <ThemedText />
+      </TouchableOpacity>
       <View style={styles.centeredView}>
         <View
           style={[
@@ -339,6 +343,13 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+  },
+  backdrop: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
   },
   modalView: {
     width: "90%",
