@@ -1,4 +1,5 @@
 import { PfpContext } from "@/contexts/pfp-context";
+import { Counter } from "@/state/counter";
 import { GameData } from "@/state/game-data";
 import { PlayerData } from "@/state/player-data";
 import { Colors } from "@/state/theme";
@@ -30,6 +31,9 @@ type OwnProps = {
   gameData: GameData;
   onLifeTotalChange: (amount: number) => void;
   onCommanderDamageChange: (key: keyof GameData, amount: number) => void;
+  onCounterClick: (counter: Counter) => void;
+  onCounterLongClick: (counter: Counter) => void;
+  onCounterMinus: (counter: Counter) => void;
   onPlayerSelect: () => void;
 };
 
@@ -39,6 +43,9 @@ export function PlayerCard({
   gameData,
   onLifeTotalChange,
   onCommanderDamageChange,
+  onCounterClick,
+  onCounterLongClick,
+  onCounterMinus,
   onPlayerSelect,
 }: OwnProps) {
   const { pfps } = useContext(PfpContext);
@@ -108,6 +115,14 @@ export function PlayerCard({
 
   const handlePlayerSelect = () => {
     onPlayerSelect();
+  };
+
+  const handleCounterLongClick = (counter: Counter) => {
+    onCounterLongClick(counter);
+  };
+
+  const handleCounterMinus = (counter: Counter) => {
+    onCounterMinus(counter);
   };
 
   if (!playerData.playerObj) {
@@ -186,6 +201,9 @@ export function PlayerCard({
             playerData={playerData}
             gameData={gameData}
             onCommanderDamageChange={handleCommanderDamageChange}
+            onCounterClick={onCounterClick}
+            onCounterLongClick={handleCounterLongClick}
+            onCounterMinus={handleCounterMinus}
           />
         </View>
         <TouchableHighlight

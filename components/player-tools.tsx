@@ -1,4 +1,5 @@
 import { PfpContext } from "@/contexts/pfp-context";
+import { Counter } from "@/state/counter";
 import { GameData } from "@/state/game-data";
 import { PlayerData } from "@/state/player-data";
 import { PLAYER_ORDER } from "@/state/player-order";
@@ -13,6 +14,9 @@ type OwnProps = {
   playerData: PlayerData;
   gameData: GameData;
   onCommanderDamageChange: (key: keyof GameData, amount: number) => void;
+  onCounterClick: (counter: Counter) => void;
+  onCounterLongClick: (counter: Counter) => void;
+  onCounterMinus: (counter: Counter) => void;
 };
 
 export function PlayerTools({
@@ -20,12 +24,27 @@ export function PlayerTools({
   playerData,
   gameData,
   onCommanderDamageChange,
+  onCounterClick,
+  onCounterLongClick,
+  onCounterMinus,
 }: OwnProps) {
   const { pfps } = useContext(PfpContext);
   const [modalOpen, setModalOpen] = useState<boolean>(false);
 
   const handleCommanderDamageChange = (key: keyof GameData, amount: number) => {
     onCommanderDamageChange(key, amount);
+  };
+
+  const handleCounterClick = (counter: Counter) => {
+    onCounterClick(counter);
+  };
+
+  const handleCounterLongClick = (counter: Counter) => {
+    onCounterLongClick(counter);
+  };
+
+  const handleCounterMinus = (counter: Counter) => {
+    onCounterMinus(counter);
   };
 
   return (
@@ -37,6 +56,9 @@ export function PlayerTools({
           gameData={gameData}
           onClose={() => setModalOpen(false)}
           onCommanderDamageChange={handleCommanderDamageChange}
+          onCounterClick={handleCounterClick}
+          onCounterLongClick={handleCounterLongClick}
+          onCounterMinus={handleCounterMinus}
         />
       )}
       <TouchableHighlight

@@ -4,7 +4,12 @@ import { ResetModal } from "@/components/reset-modal";
 import { Toolbar } from "@/components/toolbar";
 import { PfpContext } from "@/contexts/pfp-context";
 import { usePlayers } from "@/hooks/use-players";
-import { Counter } from "@/state/counters";
+import {
+  Counter,
+  COUNTER_TYPES,
+  CounterState,
+  CounterType,
+} from "@/state/counter";
 import { DbDeck } from "@/state/deck";
 import { Game } from "@/state/game";
 import { GameData } from "@/state/game-data";
@@ -29,7 +34,7 @@ const defaultPlayerdata: PlayerData = {
   started: false,
   t1SolRing: false,
   commanderDamage: {} as Record<keyof GameData, number>,
-  counters: {} as Record<Counter, number>,
+  counters: {} as Record<Counter, CounterState>,
 };
 
 const defaultData: GameData = {
@@ -80,6 +85,13 @@ export default function Index() {
         ...prev[player],
         lifeTotal: Math.max(0, prev[player].lifeTotal + amount),
         dead: prev[player].lifeTotal + amount <= 0,
+        counters: {
+          ...prev[player].counters,
+          [Counter.DEAD]: {
+            ...prev[player].counters[Counter.DEAD],
+            enabled: prev[player].lifeTotal + amount <= 0,
+          },
+        },
       },
     }));
   };
@@ -109,9 +121,193 @@ export default function Index() {
             ...prev[player].commanderDamage,
             [key]: newCommanderDamage + commanderDamageAdjustment,
           },
+          counters: {
+            ...prev[player].counters,
+            [Counter.DEAD]: {
+              ...prev[player].counters[Counter.DEAD],
+              enabled: newDead,
+            },
+          },
         },
       };
     });
+  };
+
+  const handleCounterClick = (player: keyof GameData, counter: Counter) => {
+    switch (COUNTER_TYPES[counter].type) {
+      case CounterType.COUNTER:
+        handleCounterChange(player, counter);
+        break;
+      case CounterType.TOGGLE:
+        handleToggleChange(player, counter);
+        break;
+      case CounterType.SWITCH:
+        handleSwitchChange(player, counter);
+        break;
+    }
+  };
+
+  const handleCounterChange = (player: keyof GameData, counter: Counter) => {
+    setData((prev) => ({
+      ...prev,
+      [player]: {
+        ...prev[player],
+        counters: {
+          ...prev[player].counters,
+          [counter]: {
+            ...prev[player].counters[counter],
+            enabled: true,
+            value: (prev[player].counters[counter]?.value || 0) + 1,
+          },
+        },
+      },
+    }));
+  };
+
+  const handleToggleChange = (player: keyof GameData, counter: Counter) => {
+    setData((prev) => ({
+      ...prev,
+      [player]: {
+        ...prev[player],
+        dead: counter === Counter.DEAD ? !prev[player].dead : prev[player].dead,
+        counters: {
+          ...prev[player].counters,
+          [counter]: {
+            ...prev[player].counters[counter],
+            enabled: !prev[player].counters[counter]?.enabled,
+          },
+        },
+      },
+    }));
+  };
+
+  const handleSwitchChange = (player: keyof GameData, counter: Counter) => {
+    setData((prev) => {
+      const prevEnabled = prev[player].counters[counter]?.enabled;
+      const prevSwitched = prev[player].counters[counter]?.switched;
+
+      if (!prevEnabled) {
+        return {
+          ...prev,
+          [player]: {
+            ...prev[player],
+            counters: {
+              ...prev[player].counters,
+              [counter]: {
+                ...prev[player].counters[counter],
+                enabled: true,
+              },
+            },
+          },
+        };
+      }
+
+      return {
+        ...prev,
+        [player]: {
+          ...prev[player],
+          counters: {
+            ...prev[player].counters,
+            [counter]: {
+              ...prev[player].counters[counter],
+              enabled: true,
+              switched: !prevSwitched,
+            },
+          },
+        },
+      };
+    });
+  };
+
+  const handleCounterLongClick = (player: keyof GameData, counter: Counter) => {
+    switch (COUNTER_TYPES[counter].type) {
+      case CounterType.COUNTER:
+        handleCounterLongChange(player, counter);
+        break;
+      case CounterType.TOGGLE:
+        handleToggleLongChange(player, counter);
+        break;
+      case CounterType.SWITCH:
+        handleSwitchLongChange(player, counter);
+        break;
+    }
+  };
+
+  const handleCounterLongChange = (
+    player: keyof GameData,
+    counter: Counter
+  ) => {
+    setData((prev) => ({
+      ...prev,
+      [player]: {
+        ...prev[player],
+        counters: {
+          ...prev[player].counters,
+          [counter]: {
+            ...prev[player].counters[counter],
+            enabled: false,
+            value: 0,
+          },
+        },
+      },
+    }));
+  };
+
+  const handleToggleLongChange = (player: keyof GameData, counter: Counter) => {
+    setData((prev) => ({
+      ...prev,
+      [player]: {
+        ...prev[player],
+        counters: {
+          ...prev[player].counters,
+          [counter]: {
+            ...prev[player].counters[counter],
+            enabled: false,
+          },
+        },
+      },
+    }));
+  };
+
+  const handleSwitchLongChange = (player: keyof GameData, counter: Counter) => {
+    setData((prev) => {
+      return {
+        ...prev,
+        [player]: {
+          ...prev[player],
+          counters: {
+            ...prev[player].counters,
+            [counter]: {
+              ...prev[player].counters[counter],
+              enabled: false,
+              switched: false,
+            },
+          },
+        },
+      };
+    });
+  };
+
+  const handleCounterMinus = (player: keyof GameData, counter: Counter) => {
+    if (COUNTER_TYPES[counter].type === CounterType.COUNTER) {
+      setData((prev) => {
+        const newValue = (prev[player].counters[counter]?.value || 0) - 1;
+        return {
+          ...prev,
+          [player]: {
+            ...prev[player],
+            counters: {
+              ...prev[player].counters,
+              [counter]: {
+                ...prev[player].counters[counter],
+                enabled: newValue > 0,
+                value: newValue,
+              },
+            },
+          },
+        };
+      });
+    }
   };
 
   const handleReset = () => {
@@ -211,6 +407,11 @@ export default function Index() {
           onCommanderDamageChange={(key, amount) =>
             handleCommanderDamageChange("player1", key, amount)
           }
+          onCounterClick={(counter) => handleCounterClick("player1", counter)}
+          onCounterLongClick={(counter) =>
+            handleCounterLongClick("player1", counter)
+          }
+          onCounterMinus={(counter) => handleCounterMinus("player1", counter)}
           onPlayerSelect={() => handlePlayerSelect("player1")}
         />
         <PlayerCard
@@ -223,6 +424,11 @@ export default function Index() {
           onCommanderDamageChange={(key, amount) =>
             handleCommanderDamageChange("player2", key, amount)
           }
+          onCounterClick={(counter) => handleCounterClick("player2", counter)}
+          onCounterLongClick={(counter) =>
+            handleCounterLongClick("player2", counter)
+          }
+          onCounterMinus={(counter) => handleCounterMinus("player2", counter)}
           onPlayerSelect={() => handlePlayerSelect("player2")}
         />
       </View>
@@ -238,6 +444,11 @@ export default function Index() {
           onCommanderDamageChange={(key, amount) =>
             handleCommanderDamageChange("player3", key, amount)
           }
+          onCounterClick={(counter) => handleCounterClick("player3", counter)}
+          onCounterLongClick={(counter) =>
+            handleCounterLongClick("player3", counter)
+          }
+          onCounterMinus={(counter) => handleCounterMinus("player3", counter)}
           onPlayerSelect={() => handlePlayerSelect("player3")}
         />
         <PlayerCard
@@ -250,6 +461,11 @@ export default function Index() {
           onCommanderDamageChange={(key, amount) =>
             handleCommanderDamageChange("player4", key, amount)
           }
+          onCounterClick={(counter) => handleCounterClick("player4", counter)}
+          onCounterLongClick={(counter) =>
+            handleCounterLongClick("player4", counter)
+          }
+          onCounterMinus={(counter) => handleCounterMinus("player4", counter)}
           onPlayerSelect={() => handlePlayerSelect("player4")}
         />
       </View>
