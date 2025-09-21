@@ -4,6 +4,7 @@ import { clearGameData } from "@/utils/storage";
 import {
   faArrowRightFromBracket,
   faCheck,
+  faExternalLink,
   faLeftLong,
   faTrash,
   faUserCircle,
@@ -13,6 +14,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { reloadAppAsync } from "expo";
 import { useContext, useState } from "react";
 import {
+  Linking,
   Modal,
   Pressable,
   StyleSheet,
@@ -64,6 +66,10 @@ export function SettingsModal({ onClose }: OwnProps) {
     await logout();
     await clearGameData();
     reloadAppAsync();
+  };
+
+  const handleOpenStatTracker = () => {
+    Linking.openURL("https://calice-de-marbre-mtg.web.app");
   };
 
   if (viewLogin) {
@@ -199,6 +205,16 @@ export function SettingsModal({ onClose }: OwnProps) {
               </View>
             </Pressable>
           )}
+          <Pressable style={styles.button} onPress={handleOpenStatTracker}>
+            <View style={styles.buttonContent}>
+              <FontAwesomeIcon
+                icon={faExternalLink}
+                color={Colors.dark.text}
+                size={20}
+              />
+              <ThemedText>Open Stat Tracker</ThemedText>
+            </View>
+          </Pressable>
           <Pressable
             style={[styles.button, styles.buttonNegative]}
             onPress={handleClearData}

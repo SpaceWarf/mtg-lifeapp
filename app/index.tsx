@@ -4,6 +4,7 @@ import { ResetModal } from "@/components/reset-modal";
 import { Toolbar } from "@/components/toolbar";
 import { PfpContext } from "@/contexts/pfp-context";
 import { usePlayers } from "@/hooks/use-players";
+import { GameService } from "@/services/game-service";
 import {
   Counter,
   COUNTER_TYPES,
@@ -573,10 +574,10 @@ export default function Index() {
   };
 
   const handleResetAndSave = () => {
-    // TODO: Save the data
     const game: Game = gameDataToGame(data);
-    console.log("SAVING GAME DATA", game);
-    // handleReset();
+    GameService.create(game).then(() => {
+      handleReset();
+    });
   };
 
   const handlePlayerSelect = (player: keyof GameData) => {

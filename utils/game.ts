@@ -18,7 +18,7 @@ export function playerDataToGamePlayer(playerData: PlayerData): GamePlayer {
   return {
     player: playerData.playerId,
     deck: playerData.deckId,
-    deckVersion: playerData.deckVersion,
+    deckVersion: playerData.deckVersion ?? "", // TODO: implement version selection
     started: playerData.counters[Counter.STARTED]?.enabled ?? false,
     t1SolRing: playerData.counters[Counter.T1_SOL_RING]?.enabled ?? false,
     won: !playerData.dead,

@@ -29,6 +29,7 @@ type OwnProps = {
   onResetAndSave: () => void;
 };
 
+// TODO: implement comments
 export function ResetModal({
   gameData,
   onClose,
