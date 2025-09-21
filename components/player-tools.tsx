@@ -97,6 +97,7 @@ export function PlayerTools({
                   Counter.DAY_NIGHT,
                   Counter.STARTED,
                   Counter.T1_SOL_RING,
+                  Counter.DEAD,
                 ].includes(counter)
             )
             .map((counter) => (
