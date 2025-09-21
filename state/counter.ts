@@ -21,15 +21,15 @@ export enum Counter {
   INITIATIVE = "initiative",
   ASCEND = "ascend",
   DAY_NIGHT = "day-night",
+  STARTED = "started",
+  T1_SOL_RING = "t1-sol-ring",
+  DEAD = "dead",
   ENERGY = "energy",
   EXPERIENCE = "experience",
   TREASURE = "treasure",
   POISON = "poison",
   RAD = "rad",
   COMMANDER_TAX = "commander-tax",
-  DEAD = "dead",
-  STARTED = "started",
-  T1_SOL_RING = "t1-sol-ring",
 }
 
 export enum CounterType {
@@ -73,6 +73,21 @@ export const COUNTER_TYPES: Record<Counter, CounterConfig> = {
     icon: faSun,
     switchIcon: faMoon,
   },
+  [Counter.STARTED]: {
+    type: CounterType.TOGGLE,
+    label: "Started",
+    icon: faDiceSix,
+  },
+  [Counter.T1_SOL_RING]: {
+    type: CounterType.TOGGLE,
+    label: "Sol Ring",
+    icon: faRing,
+  },
+  [Counter.DEAD]: {
+    type: CounterType.TOGGLE,
+    label: "Dead",
+    icon: faSkull,
+  },
   [Counter.ENERGY]: {
     type: CounterType.COUNTER,
     label: "Energy",
@@ -102,20 +117,5 @@ export const COUNTER_TYPES: Record<Counter, CounterConfig> = {
     type: CounterType.COUNTER,
     label: "C. Tax",
     icon: faChessRook,
-  },
-  [Counter.DEAD]: {
-    type: CounterType.TOGGLE,
-    label: "Dead",
-    icon: faSkull,
-  },
-  [Counter.STARTED]: {
-    type: CounterType.TOGGLE,
-    label: "Started",
-    icon: faDiceSix,
-  },
-  [Counter.T1_SOL_RING]: {
-    type: CounterType.TOGGLE,
-    label: "Sol Ring",
-    icon: faRing,
   },
 };
