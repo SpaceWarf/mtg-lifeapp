@@ -176,6 +176,20 @@ export function PlayerCard({
             <View style={styles.playerSelectContent}>
               <Image source={{ uri: profilePictureUrl }} style={styles.pfp} />
               <ThemedText>{playerData.playerObj.name}</ThemedText>
+              {gameData[playerKey].counters[Counter.STARTED]?.enabled && (
+                <FontAwesomeIcon
+                  icon={COUNTER_TYPES[Counter.STARTED].icon}
+                  color={Colors.dark.text}
+                  size={20}
+                />
+              )}
+              {gameData[playerKey].counters[Counter.T1_SOL_RING]?.enabled && (
+                <FontAwesomeIcon
+                  icon={COUNTER_TYPES[Counter.T1_SOL_RING].icon}
+                  color={Colors.dark.text}
+                  size={20}
+                />
+              )}
               {gameData[playerKey].counters[Counter.MONARCH]?.enabled && (
                 <FontAwesomeIcon
                   icon={COUNTER_TYPES[Counter.MONARCH].icon}

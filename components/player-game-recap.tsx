@@ -1,5 +1,7 @@
 import { PfpContext } from "@/contexts/pfp-context";
+import { Counter } from "@/state/counter";
 import { PlayerData } from "@/state/player-data";
+import { Colors } from "@/state/theme";
 import { faCrown, faDiceSix, faRing } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { ImageBackground } from "expo-image";
@@ -33,8 +35,12 @@ export function PlayerGameRecap({ playerData }: OwnProps) {
             {!playerData.dead && (
               <FontAwesomeIcon icon={faCrown} color="gold" />
             )}
-            {playerData.started && <FontAwesomeIcon icon={faDiceSix} />}
-            {playerData.t1SolRing && <FontAwesomeIcon icon={faRing} />}
+            {playerData.counters[Counter.STARTED]?.enabled && (
+              <FontAwesomeIcon icon={faDiceSix} color={Colors.dark.text} />
+            )}
+            {playerData.counters[Counter.T1_SOL_RING]?.enabled && (
+              <FontAwesomeIcon icon={faRing} color={Colors.dark.text} />
+            )}
           </View>
         </View>
 

@@ -1,3 +1,4 @@
+import { Counter } from "@/state/counter";
 import { Game, GamePlayer } from "@/state/game";
 import { GameData } from "@/state/game-data";
 import { PlayerData } from "@/state/player-data";
@@ -18,8 +19,8 @@ export function playerDataToGamePlayer(playerData: PlayerData): GamePlayer {
     player: playerData.playerId,
     deck: playerData.deckId,
     deckVersion: playerData.deckVersion,
-    started: playerData.started,
-    t1SolRing: playerData.t1SolRing,
+    started: playerData.counters[Counter.STARTED]?.enabled ?? false,
+    t1SolRing: playerData.counters[Counter.T1_SOL_RING]?.enabled ?? false,
     won: !playerData.dead,
   };
 }

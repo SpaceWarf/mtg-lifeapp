@@ -257,7 +257,7 @@ const styles = StyleSheet.create({
     bottom: 0,
   },
   modalView: {
-    width: 420,
+    width: 480,
     overflow: "hidden",
     backgroundColor: "#202020",
     borderRadius: 15,

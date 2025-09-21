@@ -95,6 +95,8 @@ export function PlayerTools({
                   Counter.MONARCH,
                   Counter.INITIATIVE,
                   Counter.DAY_NIGHT,
+                  Counter.STARTED,
+                  Counter.T1_SOL_RING,
                 ].includes(counter)
             )
             .map((counter) => (

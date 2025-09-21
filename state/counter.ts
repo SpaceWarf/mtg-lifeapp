@@ -3,10 +3,12 @@ import {
   faBolt,
   faChessKing,
   faChessRook,
+  faDiceSix,
   faDungeon,
   faGem,
   faMoon,
   faRadiation,
+  faRing,
   faSkull,
   faStairs,
   faStar,
@@ -26,6 +28,8 @@ export enum Counter {
   RAD = "rad",
   COMMANDER_TAX = "commander-tax",
   DEAD = "dead",
+  STARTED = "started",
+  T1_SOL_RING = "t1-sol-ring",
 }
 
 export enum CounterType {
@@ -103,5 +107,15 @@ export const COUNTER_TYPES: Record<Counter, CounterConfig> = {
     type: CounterType.TOGGLE,
     label: "Dead",
     icon: faSkull,
+  },
+  [Counter.STARTED]: {
+    type: CounterType.TOGGLE,
+    label: "Started",
+    icon: faDiceSix,
+  },
+  [Counter.T1_SOL_RING]: {
+    type: CounterType.TOGGLE,
+    label: "Sol Ring",
+    icon: faRing,
   },
 };

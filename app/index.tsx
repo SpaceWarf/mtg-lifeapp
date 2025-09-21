@@ -165,7 +165,9 @@ export default function Index() {
   };
 
   const handleToggleChange = (player: keyof GameData, counter: Counter) => {
-    if ([Counter.MONARCH, Counter.INITIATIVE].includes(counter)) {
+    if (
+      [Counter.MONARCH, Counter.INITIATIVE, Counter.STARTED].includes(counter)
+    ) {
       handleToggleChangeForAllPlayers(player, counter);
       return;
     }
@@ -574,7 +576,7 @@ export default function Index() {
     // TODO: Save the data
     const game: Game = gameDataToGame(data);
     console.log("SAVING GAME DATA", game);
-    handleReset();
+    // handleReset();
   };
 
   const handlePlayerSelect = (player: keyof GameData) => {

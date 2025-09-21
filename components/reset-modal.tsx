@@ -1,5 +1,7 @@
 import { AuthContext } from "@/contexts/auth-context";
+import { Counter } from "@/state/counter";
 import { GameData } from "@/state/game-data";
+import { PlayerData } from "@/state/player-data";
 import { Colors } from "@/state/theme";
 import {
   faLeftLong,
@@ -54,7 +56,7 @@ export function ResetModal({
       (player) => player.dead
     ).length;
     const startedPlayers = Object.values(gameData).filter(
-      (player) => player.started
+      (player: PlayerData) => player.counters[Counter.STARTED]?.enabled
     ).length;
     const missingPlayers = Object.values(gameData).filter(
       (player) => !player.playerId
