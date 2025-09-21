@@ -160,9 +160,14 @@ export function DefaultContent({
             source={player.deckObj.featured}
             contentPosition="center"
           >
-            <ThemedText style={styles.imageText}>
-              {player.deckObj.name}
-            </ThemedText>
+            <View style={styles.deckInfoContainer}>
+              <ThemedText style={styles.deckName} numberOfLines={1}>
+                {player.deckObj.name}
+              </ThemedText>
+              <ThemedText style={styles.deckCommander} numberOfLines={1}>
+                {player.deckObj.commander}
+              </ThemedText>
+            </View>
           </ImageBackground>
         ) : (
           <FontAwesomeIcon
@@ -273,7 +278,11 @@ export function DeckSelectContent({
   const [search, setSearch] = useState<string>("");
   const filteredDecks = useMemo(() => {
     return (dbDecks || [])
-      .filter((deck) => deck.name.toLowerCase().includes(search.toLowerCase()))
+      .filter(
+        (deck) =>
+          deck.name.toLowerCase().includes(search.toLowerCase()) ||
+          deck.commander?.toLowerCase().includes(search.toLowerCase())
+      )
       .sort((a, b) => a.name.localeCompare(b.name));
   }, [dbDecks, search]);
 
@@ -328,7 +337,14 @@ export function DeckSelectContent({
                 source={deck.featured}
                 contentPosition="center"
               >
-                <ThemedText style={styles.imageText}>{deck.name}</ThemedText>
+                <View style={styles.deckInfoContainer}>
+                  <ThemedText style={styles.deckName} numberOfLines={1}>
+                    {deck.name}
+                  </ThemedText>
+                  <ThemedText style={styles.deckCommander} numberOfLines={1}>
+                    {deck.commander}
+                  </ThemedText>
+                </View>
               </ImageBackground>
             </TouchableHighlight>
           ))}
@@ -443,5 +459,29 @@ const styles = StyleSheet.create({
   },
   flipped: {
     transform: [{ rotate: "180deg" }],
+  },
+  deckInfoContainer: {
+    width: "100%",
+    height: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.4)",
+    gap: 4,
+    padding: 10,
+  },
+  deckName: {
+    fontSize: 25,
+    lineHeight: 28,
+    fontWeight: "bold",
+    textShadowColor: "black",
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 1,
+  },
+  deckCommander: {
+    fontSize: 15,
+    lineHeight: 17,
+    textShadowColor: "black",
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 1,
   },
 });
