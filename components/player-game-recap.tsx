@@ -16,6 +16,10 @@ type OwnProps = {
 export function PlayerGameRecap({ playerData }: OwnProps) {
   const { pfps } = useContext(PfpContext);
   const profilePictureUrl = pfps[playerData.playerId];
+  const versionIndex =
+    playerData.deckObj?.versions?.findIndex(
+      (version) => version.id === playerData.deckVersion
+    ) ?? 0;
 
   return (
     <View style={styles.container}>
@@ -49,10 +53,12 @@ export function PlayerGameRecap({ playerData }: OwnProps) {
             <ThemedText style={styles.deckName}>
               {playerData.deckObj?.name}
             </ThemedText>
-            {playerData.deckVersion && (
+            {playerData.deckVersion ? (
               <ThemedText style={styles.version}>
-                {playerData.deckVersion}
+                v{versionIndex + 2}
               </ThemedText>
+            ) : (
+              <ThemedText style={styles.version}>v1</ThemedText>
             )}
           </View>
           <ThemedText style={styles.deckCommander}>
@@ -113,6 +119,7 @@ const styles = StyleSheet.create({
   deckNameContainer: {
     flexDirection: "row",
     alignItems: "center",
+    gap: 4,
   },
   deckName: {
     fontWeight: "bold",
@@ -128,6 +135,6 @@ const styles = StyleSheet.create({
     textShadowRadius: 1,
   },
   version: {
-    fontSize: 12,
+    fontSize: 15,
   },
 });

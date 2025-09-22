@@ -602,6 +602,17 @@ export default function Index() {
         ...prev[selectedPlayer as keyof GameData],
         deckId: deck.id,
         deckObj: deck,
+        deckVersion: deck.versions?.[deck.versions.length - 1]?.id ?? "",
+      },
+    }));
+  };
+
+  const handleUpdateDeckVersion = (version: string) => {
+    setData((prev) => ({
+      ...prev,
+      [selectedPlayer as keyof GameData]: {
+        ...prev[selectedPlayer as keyof GameData],
+        deckVersion: version,
       },
     }));
   };
@@ -611,10 +622,10 @@ export default function Index() {
       {selectedPlayer && (
         <PlayerSelectModal
           player={data[selectedPlayer]}
-          flipped={["player1", "player2"].includes(selectedPlayer)}
           onClose={() => setSelectedPlayer(null)}
           onSelectPlayer={handleUpdatePlayer}
           onSelectDeck={handleUpdateDeck}
+          onSelectDeckVersion={handleUpdateDeckVersion}
         />
       )}
       {resetting && (

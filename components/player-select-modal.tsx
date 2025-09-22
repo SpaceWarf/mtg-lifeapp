@@ -29,18 +29,18 @@ import { ThemedText } from "./themed-text";
 
 type OwnProps = {
   player: PlayerData;
-  flipped?: boolean;
   onClose: () => void;
   onSelectPlayer: (player: DbPlayer) => void;
   onSelectDeck: (deck: DbDeck) => void;
+  onSelectDeckVersion: (version: string) => void;
 };
 
 export function PlayerSelectModal({
   player,
-  flipped,
   onClose,
   onSelectPlayer,
   onSelectDeck,
+  onSelectDeckVersion,
 }: OwnProps) {
   const [selectingPlayer, setSelectingPlayer] = useState<boolean>(false);
   const [selectingDeck, setSelectingDeck] = useState<boolean>(false);
@@ -53,6 +53,10 @@ export function PlayerSelectModal({
   const handleSelectDeck = (deck: DbDeck) => {
     setSelectingDeck(false);
     onSelectDeck(deck);
+  };
+
+  const handleSelectDeckVersion = (version: string) => {
+    onSelectDeckVersion(version);
   };
 
   return (
@@ -79,6 +83,7 @@ export function PlayerSelectModal({
               player={player}
               onSelectPlayer={() => setSelectingPlayer(true)}
               onSelectDeck={() => setSelectingDeck(true)}
+              onSelectDeckVersion={handleSelectDeckVersion}
               onClose={onClose}
             />
           )}
@@ -106,15 +111,21 @@ export function DefaultContent({
   player,
   onSelectPlayer,
   onSelectDeck,
+  onSelectDeckVersion,
   onClose,
 }: {
   player: PlayerData;
   onSelectPlayer: () => void;
   onSelectDeck: () => void;
+  onSelectDeckVersion: (version: string) => void;
   onClose: () => void;
 }) {
   const { pfps } = useContext(PfpContext);
   const profilePictureUrl = pfps[player.playerId];
+
+  const handleSelectDeckVersion = (version: string) => {
+    onSelectDeckVersion(version);
+  };
 
   return (
     <View style={styles.defaultContent}>
@@ -177,6 +188,32 @@ export function DefaultContent({
           />
         )}
       </TouchableHighlight>
+      {(player.deckObj?.versions || []).length > 0 && (
+        <View style={styles.versionContainer}>
+          <TouchableHighlight
+            style={[
+              styles.versionButton,
+              player.deckVersion === "" && styles.versionButtonSelected,
+            ]}
+            onPress={() => handleSelectDeckVersion("")}
+          >
+            <ThemedText>v1</ThemedText>
+          </TouchableHighlight>
+          {player.deckObj?.versions?.map((version, index) => (
+            <TouchableHighlight
+              key={version.id}
+              style={[
+                styles.versionButton,
+                player.deckVersion === version.id &&
+                  styles.versionButtonSelected,
+              ]}
+              onPress={() => handleSelectDeckVersion(version.id)}
+            >
+              <ThemedText>v{index + 2}</ThemedText>
+            </TouchableHighlight>
+          ))}
+        </View>
+      )}
     </View>
   );
 }
@@ -483,5 +520,21 @@ const styles = StyleSheet.create({
     textShadowColor: "black",
     textShadowOffset: { width: 1, height: 1 },
     textShadowRadius: 1,
+  },
+  versionContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+  },
+  versionButton: {
+    backgroundColor: "rgba(56, 56, 56, 0.9)",
+    height: 50,
+    width: 75,
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 10,
+  },
+  versionButtonSelected: {
+    backgroundColor: "rgb(30, 50, 80)",
   },
 });
