@@ -547,6 +547,7 @@ export default function Index() {
         playerObj: data["player1"].playerObj,
         deckId: data["player1"].deckId,
         deckObj: data["player1"].deckObj,
+        deckVersion: data["player1"].deckVersion,
       },
       player2: {
         ...defaultPlayerdata,
@@ -554,6 +555,7 @@ export default function Index() {
         playerObj: data["player2"].playerObj,
         deckId: data["player2"].deckId,
         deckObj: data["player2"].deckObj,
+        deckVersion: data["player2"].deckVersion,
       },
       player3: {
         ...defaultPlayerdata,
@@ -561,6 +563,7 @@ export default function Index() {
         playerObj: data["player3"].playerObj,
         deckId: data["player3"].deckId,
         deckObj: data["player3"].deckObj,
+        deckVersion: data["player3"].deckVersion,
       },
       player4: {
         ...defaultPlayerdata,
@@ -568,13 +571,14 @@ export default function Index() {
         playerObj: data["player4"].playerObj,
         deckId: data["player4"].deckId,
         deckObj: data["player4"].deckObj,
+        deckVersion: data["player4"].deckVersion,
       },
     });
     setResetting(false);
   };
 
-  const handleResetAndSave = () => {
-    const game: Game = gameDataToGame(data);
+  const handleResetAndSave = (comments: string) => {
+    const game: Game = gameDataToGame(data, comments);
     GameService.create(game).then(() => {
       handleReset();
     });

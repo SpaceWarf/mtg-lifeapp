@@ -15,6 +15,7 @@ import {
   Modal,
   Pressable,
   StyleSheet,
+  TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
@@ -26,10 +27,9 @@ type OwnProps = {
   canSave?: boolean;
   onClose: () => void;
   onReset: () => void;
-  onResetAndSave: () => void;
+  onResetAndSave: (comments: string) => void;
 };
 
-// TODO: implement comments
 export function ResetModal({
   gameData,
   onClose,
@@ -38,6 +38,7 @@ export function ResetModal({
 }: OwnProps) {
   const { user } = useContext(AuthContext);
   const [saving, setSaving] = useState(false);
+  const [comments, setComments] = useState<string>("");
 
   const canSave = useMemo(() => {
     return (
@@ -132,8 +133,16 @@ export function ResetModal({
               </View>
             </View>
             <ThemedText style={styles.description}>
-              Validate that the data is correct before saving.
+              Validate that the data is correct and add any comments before
+              saving.
             </ThemedText>
+            <TextInput
+              style={styles.input}
+              onChangeText={setComments}
+              value={comments}
+              placeholder="Comments..."
+              keyboardType="default"
+            />
             <View style={styles.recap}>
               <PlayerGameRecap playerData={gameData.player1} />
               <PlayerGameRecap playerData={gameData.player2} />
@@ -158,7 +167,7 @@ export function ResetModal({
                   styles.buttonPrimary,
                   !!gameDataError && styles.disabled,
                 ]}
-                onPress={onResetAndSave}
+                onPress={() => onResetAndSave(comments)}
                 disabled={!!gameDataError}
               >
                 <FontAwesomeIcon
@@ -277,7 +286,6 @@ const styles = StyleSheet.create({
   },
   description: {
     fontSize: 16,
-    marginBottom: 10,
   },
   recap: {
     gap: 10,
@@ -310,5 +318,14 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textAlign: "center",
     marginBottom: 10,
+  },
+  input: {
+    flexGrow: 1,
+    backgroundColor: "rgba(56, 56, 56, 0.9)",
+    borderRadius: 10,
+    padding: 15,
+    color: Colors.dark.text,
+    fontSize: 16,
+    marginTop: 10,
   },
 });
